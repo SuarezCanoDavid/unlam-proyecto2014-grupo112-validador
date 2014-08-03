@@ -2,78 +2,73 @@ package com.threedom;
 
 public class Vertice {
 	
-	private double x;
-	private double y;
-	private double z;
+	private float x;
+	private float y;
+	private float z;
 	
-	public Vertice(double x, double y, double z) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-	
-	public Vertice(Vertice vertice) {
-		this.x = vertice.x;
-		this.y = vertice.y;
-		this.z = vertice.z;
-	}
+    public Vertice() {
+        
+    }
 
-	public double getX() {
-		return x;
-	}
+    public Vertice(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
-	public void setX(double x) {
-		this.x = x;
-	}
+    public float getX() {
+        return x;
+    }
 
-	public double getY() {
-		return y;
-	}
+    public void setX(float x) {
+        this.x = x;
+    }
 
-	public void setY(double y) {
-		this.y = y;
-	}
+    public float getY() {
+        return y;
+    }
 
-	public double getZ() {
-		return z;
-	}
+    public void setY(float y) {
+        this.y = y;
+    }
 
-	public void setZ(double z) {
-		this.z = z;
-	}
+    public float getZ() {
+        return z;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(y);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(z);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
+    public void setZ(float z) {
+        this.z = z;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Vertice other = (Vertice) obj;
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
-			return false;
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
-			return false;
-		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
-			return false;
-		return true;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 11 * hash + Float.floatToIntBits(this.x);
+        hash = 11 * hash + Float.floatToIntBits(this.y);
+        hash = 11 * hash + Float.floatToIntBits(this.z);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vertice other = (Vertice) obj;
+        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z)) {
+            return false;
+        }
+        return true;
+    }
 
 	@Override
 	public String toString() {
