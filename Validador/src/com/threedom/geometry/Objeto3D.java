@@ -1,4 +1,4 @@
-package com.threedom;
+package com.threedom.geometry;
 
 import java.util.ArrayList;
 import java.util.Iterator;

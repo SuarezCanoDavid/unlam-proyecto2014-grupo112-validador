@@ -1,4 +1,4 @@
-package com.threedom;
+package com.threedom.geometry;
 
 public class Vertice {
 	

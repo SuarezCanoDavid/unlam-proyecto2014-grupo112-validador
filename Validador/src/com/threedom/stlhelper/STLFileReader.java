@@ -13,8 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import com.threedom.Vertice;
-import com.threedom.Triangulo;
+import com.threedom.geometry.Vertice;
+import com.threedom.geometry.Triangulo;
 
 /**
  *
