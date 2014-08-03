@@ -1,14 +1,8 @@
 package com.threedom;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.DataInputStream;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import com.threedom.stlhelper.STLFileReader;
 
 public class Objeto3D {
 	
@@ -19,39 +13,12 @@ public class Objeto3D {
 		
 	}
     
-    public Objeto3D(String nombreDeArchivo) throws FileNotFoundException, IOException {
-        DataInputStream stlInput = new DataInputStream(
-                new BufferedInputStream(new FileInputStream(nombreDeArchivo)));
-        Vertice verticeA = new Vertice();
-        Vertice verticeB = new Vertice();
-        Vertice verticeC = new Vertice();
-        int cantTriangulos = 0;
-        byte[] buffer = new byte[4];
+    public Objeto3D(String nombreDeArchivo) {
+        STLFileReader stlInput = new STLFileReader(nombreDeArchivo);
         
-        stlInput.skipBytes(80);
-        
-        stlInput.read(buffer, 0, 4);
-        
-        cantTriangulos = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
-        
-        for(int i = 0; i < cantTriangulos; ++i) {
-            stlInput.skipBytes(12);
-            
-            verticeA.setX(stlInput.readFloat());
-            verticeA.setY(stlInput.readFloat());
-            verticeA.setZ(stlInput.readFloat());
-            
-            verticeB.setX(stlInput.readFloat());
-            verticeB.setY(stlInput.readFloat());
-            verticeB.setZ(stlInput.readFloat());
-            
-            verticeC.setX(stlInput.readFloat());
-            verticeC.setY(stlInput.readFloat());
-            verticeC.setZ(stlInput.readFloat());
-            
-            this.addTriangulo(verticeA, verticeB, verticeC);
-            
-            stlInput.skipBytes(2);
+        for(int i = 0; i < stlInput.getCantidadDeTriangulos(); ++i) {
+            stlInput.skipNormal();
+            this.addTriangulo(stlInput.readNextTriangulo());
         }
         
         stlInput.close();

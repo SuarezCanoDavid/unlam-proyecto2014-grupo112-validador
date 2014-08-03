@@ -27,6 +27,8 @@ public class Validador {
         System.out.println(args[0]);
         
         Objeto3D obj = new Objeto3D(args[0]);
+        
+        obj.imprimir();
     }
     
 }
