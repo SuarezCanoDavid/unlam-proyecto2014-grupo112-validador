@@ -87,11 +87,11 @@ public class STLFileReader {
     }
     
     public Triangulo readNextTriangulo() {
-        Triangulo trianguloAux = new Triangulo();
+        Vertice verticeA = this.readNextVertice();
+        Vertice verticeB = this.readNextVertice();
+        Vertice verticeC = this.readNextVertice();
         
-        trianguloAux.setVerticeA(this.readNextVertice());
-        trianguloAux.setVerticeB(this.readNextVertice());
-        trianguloAux.setVerticeC(this.readNextVertice());
+        Triangulo trianguloAux = new Triangulo(verticeA,verticeB,verticeC);
         
         try {
             input.skipBytes(2);

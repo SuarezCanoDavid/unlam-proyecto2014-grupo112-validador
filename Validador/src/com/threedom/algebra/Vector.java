@@ -93,7 +93,37 @@ public class Vector {
 
     @Override
     public String toString() {
-        return String.format("[%f,%f,%f]", x, y, z);
+        return String.format("[%f;%f;%f]", x, y, z);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Float.floatToIntBits(this.x);
+        hash = 37 * hash + Float.floatToIntBits(this.y);
+        hash = 37 * hash + Float.floatToIntBits(this.z);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vector other = (Vector) obj;
+        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z)) {
+            return false;
+        }
+        return true;
     }
     
     

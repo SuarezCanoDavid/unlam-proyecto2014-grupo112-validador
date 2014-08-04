@@ -3,11 +3,13 @@ package com.threedom.geometry;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.threedom.stlhelper.STLFileReader;
+import com.threedom.algebra.Vector;
 
 public class Objeto3D {
 	
 	private ArrayList<Vertice> vertices = new ArrayList<>();
 	private ArrayList<Triangulo> triangulos = new ArrayList<>();
+    private ArrayList<Vector> normales = new ArrayList<>();
 	
 	public Objeto3D() {
 		
@@ -42,32 +44,11 @@ public class Objeto3D {
         } else {
             vertices.add(triangulo.getVerticeC());
         }
-		
-		triangulos.add(triangulo);
-	}
-	
-	public void addTriangulo(Vertice verticeA, Vertice verticeB, Vertice verticeC) {
-		Triangulo triangulo = new Triangulo();
-		
-		if(vertices.contains(verticeA)) {
-            triangulo.setVerticeA(vertices.get(vertices.indexOf(verticeA)));
-        } else {
-            vertices.add(verticeA);
-            triangulo.setVerticeA(verticeA);
-        }
-		
-		if(vertices.contains(verticeB)) {
-            triangulo.setVerticeB(vertices.get(vertices.indexOf(verticeB)));
-        } else {
-            vertices.add(verticeB);
-            triangulo.setVerticeB(verticeB);
-        }
         
-        if(vertices.contains(verticeC)) {
-            triangulo.setVerticeC(vertices.get(vertices.indexOf(verticeC)));
+        if(normales.contains(triangulo.getNormal())) {
+            triangulo.setNormal(normales.get(normales.indexOf(triangulo.getNormal())));
         } else {
-            vertices.add(verticeC);
-            triangulo.setVerticeC(verticeC);
+            normales.add(triangulo.getNormal());
         }
 		
 		triangulos.add(triangulo);
@@ -88,6 +69,14 @@ public class Objeto3D {
 	public void setTriangulos(ArrayList<Triangulo> triangulos) {
 		this.triangulos = triangulos;
 	}
+
+    public ArrayList<Vector> getNormales() {
+        return normales;
+    }
+
+    public void setNormales(ArrayList<Vector> normales) {
+        this.normales = normales;
+    }
 
 	public void imprimir() {
 		Iterator<Triangulo> it = triangulos.iterator();

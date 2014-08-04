@@ -27,12 +27,14 @@ public class Validador {
         
         obj.imprimir();*/
         
-        Vector vector1 = new Vector(1.0f,-1.0f,0.0f);
-        Vector vector2 = new Vector(0.0f,-1.0f,0.0f);
+        Vector vector1 = new Vector(-1.0f,-1.0f,-1.0f);
+        Vector vector2 = new Vector(0.0f,0.0f,-1.0f);
         
         System.out.printf("Angulo: %f\n", vector1.getAnguloEntre(vector2));
         
-        System.out.printf("Producto vectorial: %s", vector2.productoVectorial(vector1).toString());
+        System.out.printf("Producto vectorial: %s\n", vector1.productoVectorial(vector2).toString());
+        
+        System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());
     }
     
 }
