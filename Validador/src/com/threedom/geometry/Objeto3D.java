@@ -10,10 +10,6 @@ public class Objeto3D {
 	private ArrayList<Vertice> vertices = new ArrayList<>();
 	private ArrayList<Triangulo> triangulos = new ArrayList<>();
     private ArrayList<Vector> normales = new ArrayList<>();
-	
-	public Objeto3D() {
-		
-	}
     
     public Objeto3D(String nombreDeArchivo) {
         STLFileReader stlInput = new STLFileReader(nombreDeArchivo);
