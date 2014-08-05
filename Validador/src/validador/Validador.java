@@ -8,6 +8,8 @@ package validador;
 
 import com.threedom.geometry.Objeto3D;
 import com.threedom.algebra.Vector;
+import com.threedom.algebra.MatrizDeRotacion;
+import com.threedom.stlhelper.STLFileWriter;
 
 
 /**
@@ -21,20 +23,26 @@ public class Validador {
      */
     public static void main(String[] args) {
         
-        /*System.out.println(args[0]);
+        System.out.println(args[0]);
         
         Objeto3D obj = new Objeto3D(args[0]);
         
-        obj.imprimir();*/
+        STLFileWriter output = new STLFileWriter(args[1]);
         
-        Vector vector1 = new Vector(-1.0f,-1.0f,-1.0f);
+        obj.rotar(new MatrizDeRotacion(new Vector(-1.0f,0.0f,0.0f),(float)Math.toRadians(90.0)));
+        
+        output.writeObjeto3D(obj);
+        
+        output.close();
+        
+        /*Vector vector1 = new Vector(-1.0f,-1.0f,-1.0f);
         Vector vector2 = new Vector(0.0f,0.0f,-1.0f);
         
         System.out.printf("Angulo: %f\n", vector1.getAnguloEntre(vector2));
         
         System.out.printf("Producto vectorial: %s\n", vector1.productoVectorial(vector2).toString());
         
-        System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());
+        System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());*/
     }
     
 }

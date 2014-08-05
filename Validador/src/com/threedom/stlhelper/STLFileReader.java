@@ -24,7 +24,8 @@ public class STLFileReader {
     
     private static final int BUFFER_SIZE = 4;
     private DataInputStream input;
-    private int cantidadDeTriangulos = 0;
+    private int cantidadDeTriangulos;
+    private int cantidadTriangulosLeidos;
     private byte[] buffer = new byte[BUFFER_SIZE];
     
     
@@ -42,6 +43,8 @@ public class STLFileReader {
         } catch (IOException ex) {
             System.exit(-1);
         }
+        
+        cantidadTriangulosLeidos = 0;
     }
     
     public void close() {
@@ -87,16 +90,26 @@ public class STLFileReader {
     }
     
     public Triangulo readNextTriangulo() {
-        Vertice verticeA = this.readNextVertice();
-        Vertice verticeB = this.readNextVertice();
-        Vertice verticeC = this.readNextVertice();
+        Triangulo trianguloAux = null;
+                
+        if(cantidadTriangulosLeidos < cantidadDeTriangulos) {
+            this.skipNormal();
         
-        Triangulo trianguloAux = new Triangulo(verticeA,verticeB,verticeC);
-        
-        try {
-            input.skipBytes(2);
-        } catch (IOException ex) {
-            System.exit(-1);
+            Vertice verticeA = this.readNextVertice();
+            Vertice verticeB = this.readNextVertice();
+            Vertice verticeC = this.readNextVertice();
+
+            trianguloAux = new Triangulo(verticeA,verticeB,verticeC);
+
+            try {
+                input.skipBytes(2);
+            } catch (IOException ex) {
+                System.exit(-1);
+            }
+            
+            ++cantidadTriangulosLeidos;
+        } else {
+            trianguloAux = null;
         }
         
         return trianguloAux;

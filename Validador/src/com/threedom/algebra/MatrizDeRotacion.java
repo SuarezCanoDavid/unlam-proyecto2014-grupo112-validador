@@ -12,25 +12,31 @@ package com.threedom.algebra;
  */
 public class MatrizDeRotacion extends Matriz {
 
+    /**
+     * Matriz de rotacion
+     * @param vector Vector alrededor del cual se realiza la rotacion.
+     * @param angulo Angulo de rotacion especificado en radianes.
+     */
     public MatrizDeRotacion(Vector vector, float angulo) {
         super(3,3);
         
-        double nx = vector.getX();
-        double ny = vector.getY();
-        double nz = vector.getZ();
-        double tita = angulo;
+        float nx = vector.getX();
+        float ny = vector.getY();
+        float nz = vector.getZ();
+        float cosenoDeTita = (float) Math.cos(angulo);
+        float senoDeTita = (float) Math.sin(angulo);
         
-        matriz[0][0] = (float)((1-nx*nx)*Math.cos(tita)+nx*nx);
-        matriz[0][1] = (float)(-nx*ny*Math.cos(tita)-nz*Math.sin(tita));
-        matriz[0][2] = (float)(-nx*nz*Math.cos(tita)+ny*Math.sin(tita));
+        matriz[0][0] = (1-nx*nx)*cosenoDeTita + nx*nx;
+        matriz[0][1] = -nx*ny*cosenoDeTita - nz*senoDeTita;
+        matriz[0][2] = -nx*nz*cosenoDeTita + ny*senoDeTita;
         
-        matriz[1][0] = (float)(-nx*ny*Math.cos(tita)+nz*Math.sin(tita));
-        matriz[1][1] = (float)((1-ny*ny)*Math.cos(tita)+ny*ny);
-        matriz[1][2] = (float)(-ny*nz*Math.cos(tita)-nx*Math.sin(tita));
+        matriz[1][0] = -nx*ny*cosenoDeTita + nz*senoDeTita;
+        matriz[1][1] = (1-ny*ny)*cosenoDeTita + ny*ny;
+        matriz[1][2] = -ny*nz*cosenoDeTita - nx*senoDeTita;
         
-        matriz[2][0] = (float)(-nx*nz*Math.cos(tita)-ny*Math.sin(tita));
-        matriz[2][1] = (float)(-ny*nz*Math.cos(tita)+nx*Math.sin(tita));
-        matriz[2][2] = (float)((1-nz*nz)*Math.cos(tita)+nz*nz);
+        matriz[2][0] = -nx*nz*cosenoDeTita - ny*senoDeTita;
+        matriz[2][1] = -ny*nz*cosenoDeTita + nx*senoDeTita;
+        matriz[2][2] = (1-nz*nz)*cosenoDeTita + nz*nz;
     }
     
     

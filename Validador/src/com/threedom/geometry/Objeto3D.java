@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import com.threedom.stlhelper.STLFileReader;
 import com.threedom.algebra.Vector;
+import com.threedom.algebra.MatrizDeRotacion;
 
 public class Objeto3D {
 	
@@ -14,9 +15,12 @@ public class Objeto3D {
     public Objeto3D(String nombreDeArchivo) {
         STLFileReader stlInput = new STLFileReader(nombreDeArchivo);
         
-        for(int i = 0; i < stlInput.getCantidadDeTriangulos(); ++i) {
-            stlInput.skipNormal();
-            this.addTriangulo(stlInput.readNextTriangulo());
+        Triangulo trianguloAux = stlInput.readNextTriangulo();
+        
+        while(trianguloAux != null) {
+            this.addTriangulo(trianguloAux);
+            
+            trianguloAux = stlInput.readNextTriangulo();
         }
         
         stlInput.close();
@@ -74,6 +78,33 @@ public class Objeto3D {
         this.normales = normales;
     }
 
+    public void rotar(MatrizDeRotacion matrizDeRotacion) {
+        Iterator<Vertice> itVertices = this.vertices.iterator();
+        Iterator<Vector> itNormales = this.normales.iterator();
+        Vertice verticeAux;
+        Vertice verticeAuy;
+        Vector normalAux;
+        Vector normalAuy;
+        
+        while(itVertices.hasNext()) {
+            verticeAux = itVertices.next();
+            verticeAuy = matrizDeRotacion.multipicarPorVertice(verticeAux);
+            
+            verticeAux.setX(verticeAuy.getX());
+            verticeAux.setY(verticeAuy.getY());
+            verticeAux.setZ(verticeAuy.getZ());
+        }
+        
+        while(itNormales.hasNext()) {
+            normalAux = itNormales.next();
+            normalAuy = matrizDeRotacion.multipicarPorVector(normalAux);
+            
+            normalAux.setX(normalAuy.getX());
+            normalAux.setY(normalAuy.getY());
+            normalAux.setZ(normalAuy.getZ());
+        }
+    }
+    
 	public void imprimir() {
 		Iterator<Triangulo> it = triangulos.iterator();
 		int i = 0;

@@ -87,8 +87,8 @@ public class Vector {
     }
     
     public float getAnguloEntre(Vector vector2) {
-        return (float) Math.toDegrees(Math.acos(this.productoEscalar(vector2)/
-                (this.getModulo()*vector2.getModulo())));
+        return (float) Math.acos(this.productoEscalar(vector2)/
+                (this.getModulo()*vector2.getModulo()));
     }
 
     @Override
