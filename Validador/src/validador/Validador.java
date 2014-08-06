@@ -10,6 +10,7 @@ import com.threedom.geometry.Objeto3D;
 import com.threedom.algebra.Vector;
 import com.threedom.algebra.MatrizDeRotacion;
 import com.threedom.stlhelper.STLFileWriter;
+import com.threedom.stlhelper.STLFileReader;
 
 
 /**
@@ -22,14 +23,17 @@ public class Validador {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        STLFileReader input = new STLFileReader(args[0]);
         
-        System.out.println(args[0]);
+        Objeto3D obj = new Objeto3D();
         
-        Objeto3D obj = new Objeto3D(args[0]);
+        input.readObjeto3D(obj);
         
-        STLFileWriter output = new STLFileWriter(args[1]);
+        input.close();
         
         obj.rotar(new MatrizDeRotacion(new Vector(-1.0f,0.0f,0.0f),(float)Math.toRadians(90.0)));
+        
+        STLFileWriter output = new STLFileWriter(args[1]);
         
         output.writeObjeto3D(obj);
         

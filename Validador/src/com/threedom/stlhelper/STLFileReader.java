@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import com.threedom.geometry.Vertice;
 import com.threedom.geometry.Triangulo;
+import com.threedom.geometry.Objeto3D;
 
 /**
  *
@@ -24,27 +25,26 @@ public class STLFileReader {
     
     private static final int BUFFER_SIZE = 4;
     private DataInputStream input;
-    private int cantidadDeTriangulos;
-    private int cantidadTriangulosLeidos;
     private byte[] buffer = new byte[BUFFER_SIZE];
     
-    
-    public STLFileReader(String nombreArchivo) {
+    public STLFileReader(String nombreDeArchivo) {
         try {
-            input = new DataInputStream(new BufferedInputStream(new FileInputStream(nombreArchivo)));
+            input = new DataInputStream(new BufferedInputStream(new FileInputStream(nombreDeArchivo)));
         } catch (FileNotFoundException ex) {
             System.exit(-1);
         }
+    }
+    
+    public void readObjeto3D(Objeto3D obj) {
+        int cantidadDeTriangulos;
         
-        try {
-            input.skipBytes(80);
-            
-            cantidadDeTriangulos = this.readNextInt();
-        } catch (IOException ex) {
-            System.exit(-1);
+        this.skipFirst80Bytes();
+        
+        cantidadDeTriangulos = this.readCantidadDeTriangulos();
+        
+        for(int i = 0; i < cantidadDeTriangulos; ++i) {
+            obj.addTriangulo(this.readTriangulo());
         }
-        
-        cantidadTriangulosLeidos = 0;
     }
     
     public void close() {
@@ -75,11 +75,7 @@ public class STLFileReader {
         return ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
     
-    public int getCantidadDeTriangulos() {
-        return this.cantidadDeTriangulos;
-    }
-    
-    public Vertice readNextVertice() {
+    private Vertice readVertice() {
         Vertice verticeAux = new Vertice();
         
         verticeAux.setX(this.readNextFloat());
@@ -89,37 +85,45 @@ public class STLFileReader {
         return verticeAux;
     }
     
-    public Triangulo readNextTriangulo() {
-        Triangulo trianguloAux = null;
-                
-        if(cantidadTriangulosLeidos < cantidadDeTriangulos) {
-            this.skipNormal();
+    private Triangulo readTriangulo() {
+        this.skipNormal();
         
-            Vertice verticeA = this.readNextVertice();
-            Vertice verticeB = this.readNextVertice();
-            Vertice verticeC = this.readNextVertice();
+        Vertice verticeA = this.readVertice();
+        Vertice verticeB = this.readVertice();
+        Vertice verticeC = this.readVertice();
 
-            trianguloAux = new Triangulo(verticeA,verticeB,verticeC);
-
-            try {
-                input.skipBytes(2);
-            } catch (IOException ex) {
-                System.exit(-1);
-            }
-            
-            ++cantidadTriangulosLeidos;
-        } else {
-            trianguloAux = null;
-        }
+        Triangulo trianguloAux = new Triangulo(verticeA,verticeB,verticeC);
+        
+        this.skipAttributeByteCount();
         
         return trianguloAux;
     }
     
-    public void skipNormal() {
+    private void skipNormal() {
         try {
             input.skipBytes(12);
         } catch (IOException ex) {
             System.exit(-1);
         }
+    }
+    
+    private void skipFirst80Bytes() {
+        try {
+            input.skipBytes(80);
+        } catch (IOException ex) {
+            System.exit(-1);
+        }
+    }
+    
+    private void skipAttributeByteCount() {
+        try {
+            input.skipBytes(2);
+        } catch (IOException ex) {
+            System.exit(-1);
+        }
+    }
+    
+    private int readCantidadDeTriangulos() {
+        return this.readNextInt();
     }
 }

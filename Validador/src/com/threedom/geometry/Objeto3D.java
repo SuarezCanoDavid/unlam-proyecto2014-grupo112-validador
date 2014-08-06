@@ -2,7 +2,6 @@ package com.threedom.geometry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import com.threedom.stlhelper.STLFileReader;
 import com.threedom.algebra.Vector;
 import com.threedom.algebra.MatrizDeRotacion;
 
@@ -12,18 +11,8 @@ public class Objeto3D {
 	private ArrayList<Triangulo> triangulos = new ArrayList<>();
     private ArrayList<Vector> normales = new ArrayList<>();
     
-    public Objeto3D(String nombreDeArchivo) {
-        STLFileReader stlInput = new STLFileReader(nombreDeArchivo);
+    public Objeto3D() {
         
-        Triangulo trianguloAux = stlInput.readNextTriangulo();
-        
-        while(trianguloAux != null) {
-            this.addTriangulo(trianguloAux);
-            
-            trianguloAux = stlInput.readNextTriangulo();
-        }
-        
-        stlInput.close();
     }
 	
 	public void addTriangulo(Triangulo triangulo) {
