@@ -12,59 +12,69 @@ package com.threedom.algebra;
  */
 public class Vector {
     
-    private float x;
-    private float y;
-    private float z;
+    private double x;
+    private double y;
+    private double z;
     
     public Vector() {
         
     }
 
-    public Vector(float x, float y, float z) {
+    public Vector(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(float z) {
+    public void setZ(double z) {
         this.z = z;
     }
     
-    public Vector restar(Vector vectorSustraendo) {
+    public Vector restar(Vector vector2) {
         Vector vectorResultado = new Vector();
         
-        vectorResultado.x = this.x - vectorSustraendo.x;
-        vectorResultado.y = this.y - vectorSustraendo.y;
-        vectorResultado.z = this.z - vectorSustraendo.z;
+        vectorResultado.x = this.x - vector2.x;
+        vectorResultado.y = this.y - vector2.y;
+        vectorResultado.z = this.z - vector2.z;
         
         return vectorResultado;
     }
     
-    public float getModulo() {
-        return (float) Math.sqrt((x * x) + (y * y) + (z * z));
+    public Vector sumar(Vector vector2) {
+        Vector vectorResultado = new Vector();
+        
+        vectorResultado.x = this.x + vector2.x;
+        vectorResultado.y = this.y + vector2.y;
+        vectorResultado.z = this.z + vector2.z;
+        
+        return vectorResultado;
     }
     
-    public float productoEscalar(Vector vector2) {
+    public double getModulo() {
+        return Math.sqrt((x * x) + (y * y) + (z * z));
+    }
+    
+    public double productoEscalar(Vector vector2) {
         return (this.x * vector2.x) + (this.y * vector2.y) + (this.z * vector2.z);
     }
     
@@ -79,18 +89,24 @@ public class Vector {
     }
     
     public void normalizar() {
-        float modulo = this.getModulo();
+        double modulo = this.getModulo();
         
         x /= modulo;
         y /= modulo;
         z /= modulo;
     }
     
-    public float getAnguloEntre(Vector vector2) {
-        return (float) Math.acos(this.productoEscalar(vector2)/
+    public double getAnguloEntre(Vector vector2) {
+        return Math.acos(this.productoEscalar(vector2)/
                 (this.getModulo()*vector2.getModulo()));
     }
-
+    
+    public void cargarConValoresDe(Vector vector2) {
+        this.x = vector2.x;
+        this.y = vector2.y;
+        this.z = vector2.z;
+    }
+    
     @Override
     public String toString() {
         return String.format("[%f;%f;%f]", x, y, z);
@@ -99,9 +115,9 @@ public class Vector {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 37 * hash + Float.floatToIntBits(this.x);
-        hash = 37 * hash + Float.floatToIntBits(this.y);
-        hash = 37 * hash + Float.floatToIntBits(this.z);
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
         return hash;
     }
 
@@ -114,17 +130,15 @@ public class Vector {
             return false;
         }
         final Vector other = (Vector) obj;
-        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
             return false;
         }
-        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
             return false;
         }
-        if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z)) {
+        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
             return false;
         }
         return true;
     }
-    
-    
  }

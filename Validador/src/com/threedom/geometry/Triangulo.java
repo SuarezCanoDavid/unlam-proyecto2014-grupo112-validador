@@ -13,6 +13,14 @@ public class Triangulo {
 		
 	}
 
+    public Triangulo(Triangulo triangulo2) {
+        this.verticeA = new Vertice(triangulo2.verticeA);
+        this.verticeB = new Vertice(triangulo2.verticeB);
+        this.verticeC = new Vertice(triangulo2.verticeC);
+        
+        this.calcularNormal();
+    }
+    
 	public Triangulo(Vertice verticeA, Vertice verticeB, Vertice verticeC) {
 		super();
 		this.verticeA = verticeA;

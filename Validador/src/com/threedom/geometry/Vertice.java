@@ -1,51 +1,79 @@
 package com.threedom.geometry;
 
+import com.threedom.algebra.MatrizDeRotacion;
+
 public class Vertice {
 	
-	private float x;
-	private float y;
-	private float z;
+	private double x;
+	private double y;
+	private double z;
 	
     public Vertice() {
         
     }
+    
+    public Vertice(Vertice vertice2) {
+        this.x = vertice2.x;
+        this.y = vertice2.y;
+        this.z = vertice2.z;
+    }
 
-    public Vertice(float x, float y, float z) {
+    public Vertice(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(float z) {
+    public void setZ(double z) {
         this.z = z;
+    }
+
+    public boolean esMenorQue(Vertice vertice2) {
+        return this.z < vertice2.z;
+    }
+    
+    public void rotar(MatrizDeRotacion matrizDeRotacion) {
+        matrizDeRotacion.multiplicarYReemplazar(this);
+    }
+    
+    public void cargarConValoresDe(Vertice vertice2) {
+        this.x = vertice2.x;
+        this.y = vertice2.y;
+        this.z = vertice2.z;
+    }
+    
+    public void restarYReemplazar(Vertice vertice2) {
+        this.x -= vertice2.x;
+        this.y -= vertice2.y;
+        this.z -= vertice2.z;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 11 * hash + Float.floatToIntBits(this.x);
-        hash = 11 * hash + Float.floatToIntBits(this.y);
-        hash = 11 * hash + Float.floatToIntBits(this.z);
+        int hash = 3;
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.z) ^ (Double.doubleToLongBits(this.z) >>> 32));
         return hash;
     }
 
@@ -58,13 +86,13 @@ public class Vertice {
             return false;
         }
         final Vertice other = (Vertice) obj;
-        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
             return false;
         }
-        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
             return false;
         }
-        if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z)) {
+        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
             return false;
         }
         return true;

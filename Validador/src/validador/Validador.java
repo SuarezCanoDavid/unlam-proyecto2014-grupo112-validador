@@ -7,8 +7,6 @@
 package validador;
 
 import com.threedom.geometry.Objeto3D;
-import com.threedom.algebra.Vector;
-import com.threedom.algebra.MatrizDeRotacion;
 import com.threedom.stlhelper.STLFileWriter;
 import com.threedom.stlhelper.STLFileReader;
 
@@ -23,30 +21,47 @@ public class Validador {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        STLFileReader input = new STLFileReader(args[0]);
+        Objeto3D objOriginal = new Objeto3D();
+        Objeto3D objClone = null;
+        int i;
         
-        Objeto3D obj = new Objeto3D();
+        leerObjeto3D(objOriginal,args[0]);
+        
+        objClone = new Objeto3D(objOriginal);
+        
+        /*boolean rotacionOK = false;
+        int cantidadDeTriangulos = objOriginal.getTriangulos().size();
+        
+        for(i = 0; i < cantidadDeTriangulos && !rotacionOK; ++i) {
+            objClone.cargarConValoresDe(objOriginal);
+            
+            rotacionOK = objClone.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(i));
+        }
+        
+        if(rotacionOK) {
+            //objClone.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(--i));
+            escribirObjeto3D(objClone,args[1]);
+        }*/
+        
+        /*System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());*/
+        
+        objOriginal.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(0));
+        escribirObjeto3D(objOriginal,args[1]);
+    }
+    
+    private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {
+        STLFileReader input = new STLFileReader(nombreArchivo);
         
         input.readObjeto3D(obj);
         
         input.close();
-        
-        obj.rotar(new MatrizDeRotacion(new Vector(-1.0f,0.0f,0.0f),(float)Math.toRadians(90.0)));
-        
-        STLFileWriter output = new STLFileWriter(args[1]);
+    }
+    
+    private static void escribirObjeto3D(Objeto3D obj, String nombreArchivo) {
+        STLFileWriter output = new STLFileWriter(nombreArchivo);
         
         output.writeObjeto3D(obj);
         
         output.close();
-        
-        /*Vector vector1 = new Vector(-1.0f,-1.0f,-1.0f);
-        Vector vector2 = new Vector(0.0f,0.0f,-1.0f);
-        
-        System.out.printf("Angulo: %f\n", vector1.getAnguloEntre(vector2));
-        
-        System.out.printf("Producto vectorial: %s\n", vector1.productoVectorial(vector2).toString());
-        
-        System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());*/
     }
-    
 }

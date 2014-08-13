@@ -45,6 +45,8 @@ public class STLFileReader {
         for(int i = 0; i < cantidadDeTriangulos; ++i) {
             obj.addTriangulo(this.readTriangulo());
         }
+        
+        obj.trasladarAOrigen();
     }
     
     public void close() {

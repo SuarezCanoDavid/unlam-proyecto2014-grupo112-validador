@@ -92,15 +92,15 @@ public class STLFileWriter {
     }
     
     private void writeNormal(Vector normal) {
-        this.writeFloat(normal.getX());
-        this.writeFloat(normal.getY());
-        this.writeFloat(normal.getZ());
+        this.writeFloat((float)normal.getX());
+        this.writeFloat((float)normal.getY());
+        this.writeFloat((float)normal.getZ());
     }
     
     private void writeVertice(Vertice vertice) {
-        this.writeFloat(vertice.getX());
-        this.writeFloat(vertice.getY());
-        this.writeFloat(vertice.getZ());
+        this.writeFloat((float)vertice.getX());
+        this.writeFloat((float)vertice.getY());
+        this.writeFloat((float)vertice.getZ());
     }
     
     private void writeTriangulo(Triangulo triangulo) {
