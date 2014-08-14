@@ -29,7 +29,7 @@ public class Validador {
         
         objClone = new Objeto3D(objOriginal);
         
-        /*boolean rotacionOK = false;
+        boolean rotacionOK = false;
         int cantidadDeTriangulos = objOriginal.getTriangulos().size();
         
         for(i = 0; i < cantidadDeTriangulos && !rotacionOK; ++i) {
@@ -41,12 +41,8 @@ public class Validador {
         if(rotacionOK) {
             //objClone.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(--i));
             escribirObjeto3D(objClone,args[1]);
-        }*/
-        
+        }
         /*System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());*/
-        
-        objOriginal.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(0));
-        escribirObjeto3D(objOriginal,args[1]);
     }
     
     private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {

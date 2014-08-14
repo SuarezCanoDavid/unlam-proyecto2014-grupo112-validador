@@ -203,7 +203,7 @@ public class Matriz {
         Vector vec2 = vec1.productoVectorial(AC);
         Vector vec3 = AC;
         
-        return Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(Matriz.crearMatrizDeBase(vec1, vec2, vec3));
+        return Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(Matriz.crearMatrizDeBase(vec2, vec3, vec1));
     }
     
     public static Matriz crearMatrizDeBase(Vector vec1, Vector vec2, Vector vec3) {

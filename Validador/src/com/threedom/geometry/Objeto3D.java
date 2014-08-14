@@ -4,14 +4,12 @@ import com.threedom.algebra.Matriz;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.threedom.algebra.Vector;
-import com.threedom.algebra.MatrizDeRotacion;
 
 public class Objeto3D {
 	
 	private ArrayList<Vertice> vertices = new ArrayList<>();
 	private ArrayList<Triangulo> triangulos = new ArrayList<>();
     private ArrayList<Vector> normales = new ArrayList<>();
-    private Vertice centro = null;
     
     public Objeto3D() {
         
@@ -23,8 +21,6 @@ public class Objeto3D {
         while(itTriangulos.hasNext()) {
             this.addTriangulo(new Triangulo(itTriangulos.next()));
         }
-        
-        this.trasladarAOrigen();
     } 
     
 	public void addTriangulo(Triangulo triangulo) {
@@ -66,16 +62,13 @@ public class Objeto3D {
         for(int i = 0; i < cantidadDeNormales; ++i) {
             this.normales.get(i).cargarConValoresDe(objeto2.normales.get(i));
         }
-        
-        this.centro.cargarConValoresDe(objeto2.centro);
     }
     
-    private Vertice determinarCentro() {
+    private Vertice determinarOrigen() {
         double maxX = this.vertices.get(0).getX();
         double minX = this.vertices.get(0).getX();
         double maxY = this.vertices.get(0).getY();
         double minY = this.vertices.get(0).getY();
-        double maxZ = this.vertices.get(0).getZ();
         double minZ = this.vertices.get(0).getZ();
   
         for(Vertice v : this.vertices) {
@@ -95,16 +88,12 @@ public class Objeto3D {
                 minY = v.getY();
             }
             
-            if(v.getZ() > maxZ) {
-                maxZ = v.getZ();
-            }
-            
             if(v.getZ() < minZ) {
                 minZ = v.getZ();
             }
         }
         
-        return new Vertice(minX+(maxX-minX)/2,minY+(maxY-minY)/2,minZ+(maxZ-minZ)/2);
+        return new Vertice(minX+(maxX-minX)/2,minY+(maxY-minY)/2,minZ);
     }
     
 	public ArrayList<Vertice> getVertices() {
@@ -131,22 +120,12 @@ public class Objeto3D {
         this.normales = normales;
     }
     
-    public boolean intentarRotarSegunTriangulo(Triangulo triangulo) {
-        /*Vector versorK = new Vector(0.0f,0.0f,-1.0f);
+    public boolean intentarRotarSegunTriangulo(Triangulo triangulo) {        
+        Matriz matrizDeCambioDeBase1 = Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(triangulo);
         
-        Vector vectorDeRotacion = triangulo.getNormal().productoVectorial(versorK);
-        
-        double angulo = triangulo.getNormal().getAnguloEntre(versorK);
-        
-        System.out.printf("Vector: %s. Angulo: %f\n", vectorDeRotacion,Math.toDegrees(angulo));
-        
-        Matriz matrizDeRotacion = Matriz.crearMatrizDeRotacion(vectorDeRotacion, angulo);*/
-        
-        Matriz matrizDeRotacion = Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(triangulo);
-        
-        /*Vertice menorVerticeA = matrizDeRotacion.multiplicarYCrear(triangulo.getVerticeA());
-        Vertice menorVerticeB = matrizDeRotacion.multiplicarYCrear(triangulo.getVerticeB());
-        Vertice menorVerticeC = matrizDeRotacion.multiplicarYCrear(triangulo.getVerticeC());*/
+        Vertice menorVerticeA = matrizDeCambioDeBase1.multiplicarYCrear(triangulo.getVerticeA());
+        /*Vertice menorVerticeB = matrizDeCambioDeBase.multiplicarYCrear(triangulo.getVerticeB());
+        Vertice menorVerticeC = matrizDeCambioDeBase.multiplicarYCrear(triangulo.getVerticeC());*/
         
         boolean rotacionOK = true;
         
@@ -157,35 +136,30 @@ public class Objeto3D {
         while(itVertices.hasNext() && rotacionOK) {
             verticeAux = itVertices.next();
             
-            matrizDeRotacion.multiplicarYReemplazar(verticeAux);
+            matrizDeCambioDeBase1.multiplicarYReemplazar(verticeAux);
             
-            /*if(verticeAux.esMenorQue(menorVerticeA)) {
+            if(verticeAux.esMenorQue(menorVerticeA)) {
                 rotacionOK = false;
-            }*/
+            }
         }
         
         if(rotacionOK) {
             while(itNormales.hasNext()) {
-                matrizDeRotacion.multiplicarYReemplazar(itNormales.next());
+                matrizDeCambioDeBase1.multiplicarYReemplazar(itNormales.next());
             }
         }
+        
+        this.trasladarAOrigen();
         
         return rotacionOK;
     }
     
     public void trasladarAOrigen() {
-        
-        if(centro == null) {
-            centro = determinarCentro();
-        }
+        Vertice origen = this.determinarOrigen();
         
         for(Vertice v : vertices) {
-            v.restarYReemplazar(centro);
+            v.restarYReemplazar(origen);
         }
-        
-        centro.setX(0.0f);
-        centro.setY(0.0f);
-        centro.setZ(0.0f);
     }
     
 	public void imprimir() {
