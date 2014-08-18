@@ -7,57 +7,86 @@
 package validador;
 
 import com.threedom.geometry.Objeto3D;
-import com.threedom.stlhelper.STLFileWriter;
-import com.threedom.stlhelper.STLFileReader;
-
-
+import java.util.ArrayList;
 /**
  *
  * @author david
  */
 public class Validador {
+    
+    private Objeto3D objOriginal;
+    private ArrayList<Objeto3D> sulucion = new ArrayList();
+    private short tipoDeSolucion;
+    private Objeto3D[] objClones;
+    
+    private double IDMMax;
+    private double anguloMax;
+    private int cantHilosMax;
+    
+    public static final short SOLUCION_ROTAR = 0;
+    public static final short SOLUCION_DIVIDIR = 1;
+    public static final short SOLUCION_NO = 2;
+    
+    public static final double DEFAULT_IDM_MAX = 1.9;
+    public static final double DEFAULT_ANGULO_MAX = 45;
+    public static final int DEFAULT_HILOS_MAX = Runtime.getRuntime().availableProcessors();
+    
+    public Validador(Objeto3D objeto) {
+        objOriginal = objeto;
+    }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Objeto3D objOriginal = new Objeto3D();
-        Objeto3D objClone = null;
-        int i;
+    public double getIDMMax() {
+        return IDMMax;
+    }
+
+    public void setIDMMax(double IDMMax) {
+        this.IDMMax = IDMMax;
+    }
+
+    public double getAnguloMax() {
+        return anguloMax;
+    }
+
+    public void setAnguloMax(double anguloMax) {
+        this.anguloMax = anguloMax;
+    }
+
+    public int getCantHilosMax() {
+        return cantHilosMax;
+    }
+
+    public void setCantHilosMax(int cantHilosMax) {
+        this.cantHilosMax = cantHilosMax;
+    }
+    
+    public short getTipoDeSolucion() {
+        return this.tipoDeSolucion;
+    }
+
+    public ArrayList<Objeto3D> getSulucion() {
+        return sulucion;
+    }
+    
+    public void validar() {
+        objClones = new Objeto3D[cantHilosMax];
         
-        leerObjeto3D(objOriginal,args[0]);
-        
-        objClone = new Objeto3D(objOriginal);
+        Objeto3D objClone = new Objeto3D(objOriginal);
         
         boolean rotacionOK = false;
-        int cantidadDeTriangulos = objOriginal.getTriangulos().size();
         
-        for(i = 0; i < cantidadDeTriangulos && !rotacionOK; ++i) {
+        for(int i = 0; i < objOriginal.getTriangulos().size() && !rotacionOK; ++i) {
             objClone.cargarConValoresDe(objOriginal);
             
             rotacionOK = objClone.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(i));
         }
         
         if(rotacionOK) {
-            //objClone.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(--i));
-            escribirObjeto3D(objClone,args[1]);
+            objClone.trasladarAOrigen();
+        
+            objClone.calcularIDM();
+            
+            this.sulucion.add(objClone);
+            this.tipoDeSolucion = Validador.SOLUCION_ROTAR;
         }
-        /*System.out.printf("Cantidad de nucleos: %d\n", Runtime.getRuntime().availableProcessors());*/
-    }
-    
-    private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {
-        STLFileReader input = new STLFileReader(nombreArchivo);
-        
-        input.readObjeto3D(obj);
-        
-        input.close();
-    }
-    
-    private static void escribirObjeto3D(Objeto3D obj, String nombreArchivo) {
-        STLFileWriter output = new STLFileWriter(nombreArchivo);
-        
-        output.writeObjeto3D(obj);
-        
-        output.close();
     }
 }

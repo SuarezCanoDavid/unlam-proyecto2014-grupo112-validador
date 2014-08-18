@@ -10,6 +10,7 @@ public class Objeto3D {
 	private ArrayList<Vertice> vertices = new ArrayList<>();
 	private ArrayList<Triangulo> triangulos = new ArrayList<>();
     private ArrayList<Vector> normales = new ArrayList<>();
+    private double IDM;
     
     public Objeto3D() {
         
@@ -119,7 +120,11 @@ public class Objeto3D {
     public void setNormales(ArrayList<Vector> normales) {
         this.normales = normales;
     }
-    
+
+    public double getIDM() {
+        return IDM;
+    }
+
     public boolean intentarRotarSegunTriangulo(Triangulo triangulo) {        
         Matriz matrizDeCambioDeBase1 = Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(triangulo);
         
@@ -149,8 +154,6 @@ public class Objeto3D {
             }
         }
         
-        this.trasladarAOrigen();
-        
         return rotacionOK;
     }
     
@@ -160,6 +163,51 @@ public class Objeto3D {
         for(Vertice v : vertices) {
             v.restarYReemplazar(origen);
         }
+    }
+    
+    public void calcularIDM() {
+        Vertice verticeEnBase = new Vertice();
+        Vertice verticeEnMax = new Vertice();
+        double areaEnBase = 0;
+        double areaEnMax = 0;
+        double alturaTotal = 0;
+        double alturaEnMax = 0;
+        double xAux;
+        double yAux;
+        double zAux;
+        double areaAux;
+        
+        verticeEnBase.cargarConValoresDe(vertices.get(0));
+        verticeEnMax.cargarConValoresDe(vertices.get(0));
+        
+        for(Vertice v : vertices) {
+            xAux = Math.abs(v.getX());
+            yAux = Math.abs(v.getY());
+            zAux = v.getZ();
+            
+            if(xAux > yAux) {
+                areaAux = 4 * xAux * xAux;
+            } else {
+                areaAux = 4 * yAux * yAux;
+            }
+            
+            if(areaAux >= areaEnMax) {
+                areaEnMax = areaAux;
+                alturaEnMax = zAux;
+            }
+            
+            if(zAux == 0) {
+                if(areaAux > areaEnBase) {
+                    areaEnBase = areaAux;
+                }
+            }
+            
+            if(zAux > alturaTotal) {
+                alturaTotal = zAux;
+            }
+        }
+        
+        this.IDM = (areaEnMax * (alturaEnMax/alturaTotal)) / areaEnBase;
     }
     
 	public void imprimir() {
