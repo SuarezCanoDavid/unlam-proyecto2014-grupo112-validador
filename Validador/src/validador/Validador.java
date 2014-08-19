@@ -7,32 +7,27 @@
 package validador;
 
 import com.threedom.geometry.Objeto3D;
-import java.util.ArrayList;
 /**
  *
  * @author david
  */
 public class Validador {
-    
-    private Objeto3D objOriginal;
-    private ArrayList<Objeto3D> sulucion = new ArrayList();
-    private short tipoDeSolucion;
-    private Objeto3D[] objClones;
-    
-    private double IDMMax;
-    private double anguloMax;
-    private int cantHilosMax;
-    
-    public static final short SOLUCION_ROTAR = 0;
-    public static final short SOLUCION_DIVIDIR = 1;
-    public static final short SOLUCION_NO = 2;
-    
     public static final double DEFAULT_IDM_MAX = 1.9;
     public static final double DEFAULT_ANGULO_MAX = 45;
     public static final int DEFAULT_HILOS_MAX = Runtime.getRuntime().availableProcessors();
     
+    private Objeto3D objetoOriginal;
+    private Objeto3D[] objetosCopias;
+    private Ejecutor[] ejecutores;
+    private Boolean[] ejecutorTerminado;
+    private Solucion solucion = new Solucion();
+    
+    private double IDMMax = Validador.DEFAULT_IDM_MAX;
+    private double anguloMax = Validador.DEFAULT_ANGULO_MAX;
+    private int cantHilosMax = Validador.DEFAULT_HILOS_MAX;
+    
     public Validador(Objeto3D objeto) {
-        objOriginal = objeto;
+        objetoOriginal = objeto;
     }
 
     public double getIDMMax() {
@@ -58,26 +53,36 @@ public class Validador {
     public void setCantHilosMax(int cantHilosMax) {
         this.cantHilosMax = cantHilosMax;
     }
-    
-    public short getTipoDeSolucion() {
-        return this.tipoDeSolucion;
+
+    public Solucion getSolucion() {
+        return solucion;
     }
 
-    public ArrayList<Objeto3D> getSulucion() {
-        return sulucion;
+    public Objeto3D getObjetoOriginal() {
+        return objetoOriginal;
+    }
+
+    public Objeto3D[] getObjetosCopias() {
+        return objetosCopias;
+    }
+
+    public Boolean[] getEjecutorTerminado() {
+        return ejecutorTerminado;
     }
     
     public void validar() {
-        objClones = new Objeto3D[cantHilosMax];
+        objetosCopias = new Objeto3D[cantHilosMax];
+        ejecutores = new Ejecutor[cantHilosMax];
+        ejecutorTerminado = new Boolean[cantHilosMax];
         
-        Objeto3D objClone = new Objeto3D(objOriginal);
+        Objeto3D objClone = new Objeto3D(objetoOriginal);
         
         boolean rotacionOK = false;
         
-        for(int i = 0; i < objOriginal.getTriangulos().size() && !rotacionOK; ++i) {
-            objClone.cargarConValoresDe(objOriginal);
+        for(int i = 0; i < objetoOriginal.getTriangulos().size() && !rotacionOK; ++i) {
+            objClone.cargarConValoresDe(objetoOriginal);
             
-            rotacionOK = objClone.intentarRotarSegunTriangulo(objOriginal.getTriangulos().get(i));
+            rotacionOK = objClone.intentarRotarSegunTriangulo(objetoOriginal.getTriangulos().get(i));
         }
         
         if(rotacionOK) {
@@ -85,8 +90,7 @@ public class Validador {
         
             objClone.calcularIDM();
             
-            this.sulucion.add(objClone);
-            this.tipoDeSolucion = Validador.SOLUCION_ROTAR;
+            solucion.setSolucionRotar(objClone);
         }
     }
 }

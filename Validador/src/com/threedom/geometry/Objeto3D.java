@@ -129,8 +129,6 @@ public class Objeto3D {
         Matriz matrizDeCambioDeBase1 = Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(triangulo);
         
         Vertice menorVerticeA = matrizDeCambioDeBase1.multiplicarYCrear(triangulo.getVerticeA());
-        /*Vertice menorVerticeB = matrizDeCambioDeBase.multiplicarYCrear(triangulo.getVerticeB());
-        Vertice menorVerticeC = matrizDeCambioDeBase.multiplicarYCrear(triangulo.getVerticeC());*/
         
         boolean rotacionOK = true;
         

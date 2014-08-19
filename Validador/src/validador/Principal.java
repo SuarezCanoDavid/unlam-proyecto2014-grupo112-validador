@@ -52,13 +52,10 @@ public class Principal {
         
         setParametrosDelValidador(validador);
         
-        System.out.printf("IDM: %f\nAnguloMax: %f\nHilos: %d\n", 
-                validador.getIDMMax(),validador.getAnguloMax(),validador.getCantHilosMax());
-        
         validador.validar();
         
-        if(validador.getTipoDeSolucion() == Validador.SOLUCION_ROTAR) {
-            escribirObjeto3D(validador.getSulucion().get(0),Principal.carpetaSolucion);
+        if(validador.getSolucion().isSolucionRotarAlcanzada()) {
+            escribirObjeto3D(validador.getSolucion().getSolucionRotar(),Principal.carpetaSolucion);
         }
     }
     

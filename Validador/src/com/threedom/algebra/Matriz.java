@@ -124,30 +124,6 @@ public class Matriz {
         return identidad;
     }
     
-    public static Matriz crearMatrizDeProductoVectorial(Vector vector) {
-        Matriz resultado = new Matriz(3,3);
-        
-        resultado.matriz[0][1] = -vector.getZ();
-        resultado.matriz[0][2] =  vector.getY();
-        resultado.matriz[1][0] =  vector.getZ();
-        resultado.matriz[1][2] = -vector.getX();
-        resultado.matriz[2][0] = -vector.getY();
-        resultado.matriz[2][1] =  vector.getX();
-        
-        return resultado;
-    }
-    
-    public static Matriz crearMatrizDeRotacion(Vector vector,double angulo) {
-        Matriz K = crearMatrizDeProductoVectorial(vector);
-        Matriz KK = K.multiplicar(K);
-        Matriz I = Matriz.crearMatrizIdentidad();
-        
-        Matriz resultado = I.sumar(K.multiplicar(Math.sin(angulo)));
-        resultado = resultado.sumar(KK.multiplicar(1-Math.cos(angulo)));
-        
-        return resultado;
-    }
-    
     public double determinante() {
         double a = 0;
         double b = 0;
