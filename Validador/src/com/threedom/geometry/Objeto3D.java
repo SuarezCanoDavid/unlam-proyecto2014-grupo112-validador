@@ -4,13 +4,16 @@ import com.threedom.algebra.Matriz;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.threedom.algebra.Vector;
+import java.util.Collections;
 
 public class Objeto3D {
 	
 	private ArrayList<Vertice> vertices = new ArrayList<>();
 	private ArrayList<Triangulo> triangulos = new ArrayList<>();
     private ArrayList<Vector> normales = new ArrayList<>();
-    private double IDM;
+    private double IE;
+    private double planoInferior;
+    private double planoSuperior;
     
     public Objeto3D() {
         
@@ -65,11 +68,16 @@ public class Objeto3D {
         }
     }
     
+    public void ordenarTriangulos() {
+        Collections.sort(triangulos, new ComparadorDeAreaDeTriangulo());
+    }
+    
     private Vertice determinarOrigen() {
         double maxX = this.vertices.get(0).getX();
         double minX = this.vertices.get(0).getX();
         double maxY = this.vertices.get(0).getY();
         double minY = this.vertices.get(0).getY();
+        double maxZ = this.vertices.get(0).getZ();
         double minZ = this.vertices.get(0).getZ();
   
         for(Vertice v : this.vertices) {
@@ -89,10 +97,17 @@ public class Objeto3D {
                 minY = v.getY();
             }
             
+            if(v.getZ() > maxZ) {
+                maxZ = v.getZ();
+            }
+            
             if(v.getZ() < minZ) {
                 minZ = v.getZ();
             }
         }
+        
+        planoInferior = minZ;
+        planoSuperior = maxZ;
         
         return new Vertice(minX+(maxX-minX)/2,minY+(maxY-minY)/2,minZ);
     }
@@ -101,58 +116,52 @@ public class Objeto3D {
 		return vertices;
 	}
 
-	public void setVertices(ArrayList<Vertice> vertices) {
-		this.vertices = vertices;
-	}
-
 	public ArrayList<Triangulo> getTriangulos() {
 		return triangulos;
-	}
-
-	public void setTriangulos(ArrayList<Triangulo> triangulos) {
-		this.triangulos = triangulos;
 	}
 
     public ArrayList<Vector> getNormales() {
         return normales;
     }
 
-    public void setNormales(ArrayList<Vector> normales) {
-        this.normales = normales;
+    public double getIE() {
+        return IE;
     }
 
-    public double getIDM() {
-        return IDM;
+    public double getPlanoInferior() {
+        return planoInferior;
     }
 
-    public boolean intentarRotarSegunTriangulo(Triangulo triangulo) {        
-        Matriz matrizDeCambioDeBase1 = Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(triangulo);
+    public double getPlanoSuperior() {
+        return planoSuperior;
+    }
+
+    public boolean rotarSegunTriangulo(Triangulo triangulo) {        
+        Matriz matrizDeCambioDeBase = Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(triangulo);
         
-        Vertice menorVerticeA = matrizDeCambioDeBase1.multiplicarYCrear(triangulo.getVerticeA());
+        Vertice menorVertice = matrizDeCambioDeBase.multiplicarYCrear(triangulo.getVerticeA());
         
-        boolean rotacionOK = true;
+        boolean sePuedeRotar = true;
         
         Iterator<Vertice> itVertices = this.vertices.iterator();
         Iterator<Vector> itNormales = this.normales.iterator();
         Vertice verticeAux;
    
-        while(itVertices.hasNext() && rotacionOK) {
+        while(itVertices.hasNext()) {
             verticeAux = itVertices.next();
             
-            matrizDeCambioDeBase1.multiplicarYReemplazar(verticeAux);
+            matrizDeCambioDeBase.multiplicarYReemplazar(verticeAux);
             
-            if(verticeAux.esMenorQue(menorVerticeA)) {
-                rotacionOK = false;
+            if(verticeAux.esMenorQue(menorVertice)) {
+                sePuedeRotar = false;
             }
         }
         
-        if(rotacionOK) {
-            while(itNormales.hasNext()) {
-                matrizDeCambioDeBase1.multiplicarYReemplazar(itNormales.next());
-            }
+        while(itNormales.hasNext()) {
+            matrizDeCambioDeBase.multiplicarYReemplazar(itNormales.next());
         }
         
-        return rotacionOK;
+        return sePuedeRotar;
     }
     
     public void trasladarAOrigen() {
@@ -161,15 +170,20 @@ public class Objeto3D {
         for(Vertice v : vertices) {
             v.restarYReemplazar(origen);
         }
+        
+        planoInferior -= origen.getZ();
+        planoSuperior -= origen.getZ();
+        
+        determinarIE();
     }
     
-    public void calcularIDM() {
+    private void determinarIE() {
         Vertice verticeEnBase = new Vertice();
         Vertice verticeEnMax = new Vertice();
         double areaEnBase = 0;
         double areaEnMax = 0;
-        double alturaTotal = 0;
-        double alturaEnMax = 0;
+        double alturaTotal = planoSuperior - planoInferior;
+        double alturaEnMax = planoInferior;
         double xAux;
         double yAux;
         double zAux;
@@ -194,18 +208,14 @@ public class Objeto3D {
                 alturaEnMax = zAux;
             }
             
-            if(zAux == 0) {
+            if(zAux == planoInferior) {
                 if(areaAux > areaEnBase) {
                     areaEnBase = areaAux;
                 }
             }
-            
-            if(zAux > alturaTotal) {
-                alturaTotal = zAux;
-            }
         }
         
-        this.IDM = (areaEnMax * (alturaEnMax/alturaTotal)) / areaEnBase;
+        this.IE = (areaEnMax * (alturaEnMax/alturaTotal)) / areaEnBase;
     }
     
 	public void imprimir() {

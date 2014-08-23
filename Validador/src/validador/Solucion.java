@@ -15,16 +15,21 @@ public class Solucion {
     private boolean solucionRotarAlcanzada = false;
     private Objeto3D solucionRotar = null;
     private boolean solucionDividirAlcanzada = false;
+    private Objeto3D solucionADividir = null;
+    private double planoDeCorte = 0;
     private Objeto3D solucionDividirSuperior = null;
     private Objeto3D solucionDividirInferior = null;
+    private int contadorDeOperaciones = 0;
+    private double planoDeCorteInferior;
+    private double planoInferiorDeLaCopia;
     
     public Solucion() {
         
     }
     
-    public synchronized boolean setSolucionRotar(Objeto3D obj) {
+    public synchronized boolean setSolucionRotar(Objeto3D objetoRotado) {
         if(!solucionRotarAlcanzada) {
-            solucionRotar = obj;
+            solucionRotar = new Objeto3D(objetoRotado);
             solucionRotarAlcanzada = true;
             
             return true;
@@ -33,14 +38,10 @@ public class Solucion {
         }
     }
     
-    public Objeto3D getSolucionRotar() {
-        return solucionRotar;
-    }
-    
-    public synchronized boolean setSolucionDividir(Objeto3D inferior, Objeto3D superior) {
+    public synchronized boolean setSolucionADividir(Objeto3D objetoADividir, double corte) {
         if(!solucionDividirAlcanzada) {
-            solucionDividirInferior = inferior;
-            solucionDividirSuperior = superior;
+            solucionADividir = new Objeto3D(objetoADividir);
+            planoDeCorte = corte;
             solucionDividirAlcanzada = true;
             
             return true;
@@ -49,6 +50,26 @@ public class Solucion {
         }
     }
 
+    public void setSolucionDividirSuperior(Objeto3D solucionDividirSuperior) {
+        this.solucionDividirSuperior = solucionDividirSuperior;
+    }
+
+    public void setSolucionDividirInferior(Objeto3D solucionDividirInferior) {
+        this.solucionDividirInferior = solucionDividirInferior;
+    }
+
+    public Objeto3D getSolucionRotar() {
+        return solucionRotar;
+    }
+
+    public Objeto3D getSolucionADividir() {
+        return solucionADividir;
+    }
+
+    public double getPlanoDeCorte() {
+        return planoDeCorte;
+    }
+    
     public Objeto3D getSolucionDividirSuperior() {
         return solucionDividirSuperior;
     }
@@ -63,5 +84,17 @@ public class Solucion {
 
     public synchronized boolean isSolucionDividirAlcanzada() {
         return solucionDividirAlcanzada;
+    }
+    
+    public synchronized void incrementarContadorDeOperaciones() {
+        ++contadorDeOperaciones;
+    }
+
+    public synchronized void setPlanoDeCorteInferior(double planoDeCorteInferior) {
+        this.planoDeCorteInferior = planoDeCorteInferior;
+    }
+
+    public synchronized void setPlanoInferiorDeLaCopia(double planoInferiorDeLaCopia) {
+        this.planoInferiorDeLaCopia = planoInferiorDeLaCopia;
     }
 }

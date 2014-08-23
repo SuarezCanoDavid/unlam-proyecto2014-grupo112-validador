@@ -7,6 +7,9 @@
 package validador;
 
 import com.threedom.geometry.Objeto3D;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 /**
  *
  * @author david
@@ -18,11 +21,10 @@ public class Validador {
     
     private Objeto3D objetoOriginal;
     private Objeto3D[] objetosCopias;
-    private Ejecutor[] ejecutores;
-    private Boolean[] ejecutorTerminado;
+    private Boolean[] objetosCopiasLibres;
     private Solucion solucion = new Solucion();
     
-    private double IDMMax = Validador.DEFAULT_IDM_MAX;
+    private double IEMax = Validador.DEFAULT_IDM_MAX;
     private double anguloMax = Validador.DEFAULT_ANGULO_MAX;
     private int cantHilosMax = Validador.DEFAULT_HILOS_MAX;
     
@@ -30,12 +32,12 @@ public class Validador {
         objetoOriginal = objeto;
     }
 
-    public double getIDMMax() {
-        return IDMMax;
+    public double getIEMax() {
+        return IEMax;
     }
 
-    public void setIDMMax(double IDMMax) {
-        this.IDMMax = IDMMax;
+    public void setIEMax(double IDMMax) {
+        this.IEMax = IDMMax;
     }
 
     public double getAnguloMax() {
@@ -61,36 +63,55 @@ public class Validador {
     public Objeto3D getObjetoOriginal() {
         return objetoOriginal;
     }
-
-    public Objeto3D[] getObjetosCopias() {
-        return objetosCopias;
+    
+    public Objeto3D getObjetoCopia(int i) {
+        return objetosCopias[i];
     }
-
-    public Boolean[] getEjecutorTerminado() {
-        return ejecutorTerminado;
+    
+    public synchronized int ocuparObjetoCopiaLibre() {
+        int i;
+        
+        for(i = 0; i < objetosCopiasLibres.length && !objetosCopiasLibres[i]; ++i);
+        
+        objetosCopiasLibres[i] = false;
+        
+        return i;
+    }
+    
+    public synchronized void liberarObjetoCopiaOcupado(int i) {
+        objetosCopiasLibres[i] = true;
     }
     
     public void validar() {
+        boolean finAntesDeTimeOut = true;
+        ExecutorService threadPool = Executors.newFixedThreadPool(cantHilosMax);
+        
         objetosCopias = new Objeto3D[cantHilosMax];
-        ejecutores = new Ejecutor[cantHilosMax];
-        ejecutorTerminado = new Boolean[cantHilosMax];
+        objetosCopiasLibres = new Boolean[cantHilosMax];
         
-        Objeto3D objClone = new Objeto3D(objetoOriginal);
-        
-        boolean rotacionOK = false;
-        
-        for(int i = 0; i < objetoOriginal.getTriangulos().size() && !rotacionOK; ++i) {
-            objClone.cargarConValoresDe(objetoOriginal);
-            
-            rotacionOK = objClone.intentarRotarSegunTriangulo(objetoOriginal.getTriangulos().get(i));
+        for(int i = 0; i < cantHilosMax; ++i) {
+            objetosCopias[i] = new Objeto3D(objetoOriginal);
+            objetosCopiasLibres[i] = true;
         }
         
-        if(rotacionOK) {
-            objClone.trasladarAOrigen();
+        for(int i = 0; i < objetoOriginal.getTriangulos().size(); ++i) {
+            threadPool.execute(new Ejecutable(this,i));
+        }
         
-            objClone.calcularIDM();
+        threadPool.shutdown();
+        
+        try {
+            finAntesDeTimeOut = threadPool.awaitTermination(30, TimeUnit.MINUTES);
+        } catch (InterruptedException ex) {
             
-            solucion.setSolucionRotar(objClone);
+        }
+        
+        if(finAntesDeTimeOut) {
+            if(!solucion.isSolucionRotarAlcanzada() && solucion.isSolucionDividirAlcanzada()) {
+                //Dividir
+            }
+        } else {
+            System.exit(-1);
         }
     }
 }

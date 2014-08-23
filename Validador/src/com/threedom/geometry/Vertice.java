@@ -7,6 +7,8 @@ public class Vertice {
 	private double x;
 	private double y;
 	private double z;
+    
+    public static final double DELTA = 0.0001;
 	
     public Vertice() {
         
@@ -49,7 +51,11 @@ public class Vertice {
     }
 
     public boolean esMenorQue(Vertice vertice2) {
-        return this.z < vertice2.z;
+        if(Math.abs(this.z-vertice2.z) > Vertice.DELTA) {
+            return this.z < vertice2.z;
+        }
+        
+        return false;
     }
     
     public void rotar(MatrizDeRotacion matrizDeRotacion) {

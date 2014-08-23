@@ -16,6 +16,14 @@ public class Vector {
     private double y;
     private double z;
     
+    public static Vector versorI = new Vector(1,0,0);
+    public static Vector versorMenosI = new Vector(-1,0,0);
+    public static Vector versorJ = new Vector(0,1,0);
+    public static Vector versorMenosJ = new Vector(0,-1,0);
+    public static Vector versorK = new Vector(0,0,1);
+    public static Vector versorMenosK = new Vector(0,0,-1);
+    
+    
     public Vector() {
         
     }

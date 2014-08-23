@@ -48,15 +48,26 @@ public class Principal {
         
         leerObjeto3D(objeto,nombreObjetoOriginal);
         
-        validador = new Validador(objeto);
+        /*validador = new Validador(objeto);
         
         setParametrosDelValidador(validador);
         
         validador.validar();
         
+        
         if(validador.getSolucion().isSolucionRotarAlcanzada()) {
             escribirObjeto3D(validador.getSolucion().getSolucionRotar(),Principal.carpetaSolucion);
         }
+        
+        if(validador.getSolucion().isSolucionDividirAlcanzada()) {
+            escribirObjeto3D(validador.getSolucion().getSolucionADividir(),Principal.carpetaSolucion);
+        }*/
+        
+        boolean a = objeto.rotarSegunTriangulo(objeto.getTriangulos().get(0));
+        
+        objeto.trasladarAOrigen();
+        
+        escribirObjeto3D(objeto,Principal.carpetaSolucion);
     }
     
     private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {
@@ -110,7 +121,7 @@ public class Principal {
             cantHilosMax = Validador.DEFAULT_HILOS_MAX;
         }
         
-        validador.setIDMMax(IDMMax);
+        validador.setIEMax(IDMMax);
         validador.setAnguloMax(anguloMax);
         validador.setCantHilosMax(cantHilosMax);
     }

@@ -176,10 +176,10 @@ public class Matriz {
         Vector AC = C.restar(A);
         
         Vector vec1 = AC.productoVectorial(AB);
-        Vector vec2 = vec1.productoVectorial(AC);
-        Vector vec3 = AC;
+        Vector vec2 = vec1.productoVectorial(AB);
+        Vector vec3 = AB;
         
-        return Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(Matriz.crearMatrizDeBase(vec2, vec3, vec1));
+        return Matriz.crearMatrizDeCambioDeBaseDeCanonicaA(Matriz.crearMatrizDeBase(vec3, vec2, vec1));
     }
     
     public static Matriz crearMatrizDeBase(Vector vec1, Vector vec2, Vector vec3) {

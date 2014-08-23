@@ -8,10 +8,11 @@ public class Triangulo {
 	private Vertice verticeB;
 	private Vertice verticeC;
     private Vector normal = null;
+    private double area;
 	
-	public Triangulo() {
+	/*public Triangulo() {
 		
-	}
+	}*/
 
     public Triangulo(Triangulo triangulo2) {
         this.verticeA = new Vertice(triangulo2.verticeA);
@@ -62,6 +63,14 @@ public class Triangulo {
         this.normal = normal;
     }
 
+    public double getArea() {
+        return area;
+    }
+
+    public void setArea(double area) {
+        this.area = area;
+    }
+
     private void calcularNormal() {
         Vector A = new Vector(verticeA.getX(),verticeA.getY(),verticeA.getZ());
         Vector B = new Vector(verticeB.getX(),verticeB.getY(),verticeB.getZ());
@@ -72,7 +81,59 @@ public class Triangulo {
         
         normal = AB.productoVectorial(AC);
         
+        area = normal.getModulo() / 2;
+        
         normal.normalizar();
+    }
+    
+    public double getMaxValorEnZ() {
+        double maxValorEnZ = verticeA.getZ();
+        double zB = verticeB.getZ();
+        double zC = verticeC.getZ();
+        
+        if(zB > maxValorEnZ) {
+            maxValorEnZ = zB;
+        }
+        
+        if(zC > maxValorEnZ) {
+            maxValorEnZ = zC;
+        }
+        
+        return maxValorEnZ;
+    }
+    
+    public double getMinValorEnZ() {
+        double minValorEnZ = verticeA.getZ();
+        double zB = verticeB.getZ();
+        double zC = verticeC.getZ();
+        
+        if(zB < minValorEnZ) {
+            minValorEnZ = zB;
+        }
+        
+        if(zC < minValorEnZ) {
+            minValorEnZ = zC;
+        }
+        
+        return minValorEnZ;
+    }
+    
+    public boolean perteneceAlPlano(double planoInferior) {
+        boolean esTrianguloBase = true;
+        
+        if(verticeA.getZ() != planoInferior) {
+            esTrianguloBase = false;
+        }
+        
+        if(verticeB.getZ() != planoInferior) {
+            esTrianguloBase = false;
+        }
+        
+        if(verticeC.getZ() != planoInferior) {
+            esTrianguloBase = false;
+        }
+        
+        return esTrianguloBase;
     }
     
 	@Override
