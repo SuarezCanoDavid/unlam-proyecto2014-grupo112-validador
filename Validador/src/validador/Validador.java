@@ -101,7 +101,7 @@ public class Validador {
         threadPool.shutdown();
         
         try {
-            finAntesDeTimeOut = threadPool.awaitTermination(30, TimeUnit.MINUTES);
+            finAntesDeTimeOut = threadPool.awaitTermination(30, TimeUnit.SECONDS);
         } catch (InterruptedException ex) {
             
         }

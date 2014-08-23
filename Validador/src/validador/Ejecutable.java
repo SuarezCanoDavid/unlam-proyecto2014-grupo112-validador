@@ -33,7 +33,7 @@ public class Ejecutable implements Runnable {
         solucion = validador.getSolucion();
         trianguloDeGiro = original.getTriangulos().get(nroTrianguloDeGiro);
         IEMax = validador.getIEMax();
-        anguloLimite = Math.toRadians(90 - validador.getAnguloMax());
+        anguloLimite = Math.toRadians(90 + validador.getAnguloMax());
     }
     
     @Override
@@ -65,7 +65,7 @@ public class Ejecutable implements Runnable {
             normalAux = t.getNormal();
             
             if(normalAux.getZ() < 0) {
-                if(normalAux.getAnguloEntre(Vector.versorMenosK) < anguloLimite) {
+                if(normalAux.getAnguloEntre(Vector.versorK) > anguloLimite) {
                     zAux = t.getMaxValorEnZ();
                     
                     if(zAux > planoDeCorteInferior) {
@@ -77,7 +77,7 @@ public class Ejecutable implements Runnable {
             }
             
             if(normalAux.getZ() > 0) {
-                if(normalAux.getAnguloEntre(Vector.versorK) < anguloLimite) {
+                if(normalAux.getAnguloEntre(Vector.versorMenosK) > anguloLimite) {
                     zAux = t.getMinValorEnZ();
                     
                     if(zAux < planoDeCorteSuperior) {

@@ -31,6 +31,13 @@ public class Triangulo {
         this.calcularNormal();
 	}
 
+    public void cargarConValoresDe(Triangulo triangulo2) {
+        this.verticeA.cargarConValoresDe(triangulo2.verticeA);
+        this.verticeB.cargarConValoresDe(triangulo2.verticeB);
+        this.verticeC.cargarConValoresDe(triangulo2.verticeC);
+        this.normal.cargarConValoresDe(triangulo2.normal);
+    }
+    
 	public Vertice getVerticeA() {
 		return verticeA;
 	}

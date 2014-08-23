@@ -16,6 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import com.threedom.geometry.Vertice;
+import com.threedom.geometry.Triangulo;
 
 /**
  *
@@ -48,12 +50,11 @@ public class Principal {
         
         leerObjeto3D(objeto,nombreObjetoOriginal);
         
-        /*validador = new Validador(objeto);
+        validador = new Validador(objeto);
         
         setParametrosDelValidador(validador);
         
         validador.validar();
-        
         
         if(validador.getSolucion().isSolucionRotarAlcanzada()) {
             escribirObjeto3D(validador.getSolucion().getSolucionRotar(),Principal.carpetaSolucion);
@@ -61,13 +62,16 @@ public class Principal {
         
         if(validador.getSolucion().isSolucionDividirAlcanzada()) {
             escribirObjeto3D(validador.getSolucion().getSolucionADividir(),Principal.carpetaSolucion);
-        }*/
+        }
+        /*Objeto3D copia = new Objeto3D(objeto);
         
-        boolean a = objeto.rotarSegunTriangulo(objeto.getTriangulos().get(0));
+        copia.cargarConValoresDe(objeto);
         
-        objeto.trasladarAOrigen();
+        boolean a = copia.rotarSegunTriangulo(objeto.getTriangulos().get(0));
         
-        escribirObjeto3D(objeto,Principal.carpetaSolucion);
+        copia.trasladarAOrigen();
+        
+        escribirObjeto3D(copia,Principal.carpetaSolucion);*/
     }
     
     private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {

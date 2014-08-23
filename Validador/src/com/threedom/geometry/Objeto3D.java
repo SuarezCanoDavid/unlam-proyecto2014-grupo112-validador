@@ -56,15 +56,10 @@ public class Objeto3D {
 	}
 	
     public void cargarConValoresDe(Objeto3D objeto2) {
-        int cantidadDeVertices = objeto2.vertices.size();
-        int cantidadDeNormales = objeto2.normales.size();
+        int cantidadDeTriangulos = objeto2.triangulos.size();
         
-        for(int i = 0; i < cantidadDeVertices; ++i) {
-            this.vertices.get(i).cargarConValoresDe(objeto2.vertices.get(i));
-        }
-        
-        for(int i = 0; i < cantidadDeNormales; ++i) {
-            this.normales.get(i).cargarConValoresDe(objeto2.normales.get(i));
+        for(int i = 0; i < cantidadDeTriangulos; ++i) {
+            this.triangulos.get(i).cargarConValoresDe(objeto2.triangulos.get(i));
         }
     }
     
