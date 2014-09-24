@@ -31,6 +31,17 @@ public class Vertice {
     }
 
     public void setX(double x) {
+        double superior = Math.ceil(x);
+        double inferior = Math.floor(x);
+        
+        if((superior-x) < Vertice.DELTA) {
+            x = superior;
+        }
+        
+        if((x-inferior) < Vertice.DELTA) {
+            x = inferior;
+        }
+        
         this.x = x;
     }
 
@@ -39,6 +50,17 @@ public class Vertice {
     }
 
     public void setY(double y) {
+        double superior = Math.ceil(y);
+        double inferior = Math.floor(y);
+        
+        if((superior-y) < Vertice.DELTA) {
+            y = superior;
+        }
+        
+        if((y-inferior) < Vertice.DELTA) {
+            y = inferior;
+        }
+        
         this.y = y;
     }
 
@@ -47,6 +69,17 @@ public class Vertice {
     }
 
     public void setZ(double z) {
+        double superior = Math.ceil(z);
+        double inferior = Math.floor(z);
+        
+        if((superior-z) < Vertice.DELTA) {
+            z = superior;
+        }
+        
+        if((z-inferior) < Vertice.DELTA) {
+            z = inferior;
+        }
+        
         this.z = z;
     }
 

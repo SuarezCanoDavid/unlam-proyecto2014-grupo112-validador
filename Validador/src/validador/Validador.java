@@ -7,6 +7,7 @@
 package validador;
 
 import com.threedom.geometry.Objeto3D;
+import com.threedom.geometry.Triangulo;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -108,7 +109,22 @@ public class Validador {
         
         if(finAntesDeTimeOut) {
             if(!solucion.isSolucionRotarAlcanzada() && solucion.isSolucionDividirAlcanzada()) {
-                //Dividir
+                solucion.setSolucionDividirInferior(new Objeto3D());
+                solucion.setSolucionDividirSuperior(new Objeto3D());
+                
+                for(Triangulo t : solucion.getSolucionADividir().getTriangulos()) {
+                    if(t.getMaxValorEnZ() <= solucion.getPlanoDeCorte()) {
+                        solucion.getSolucionDividirInferior().addTriangulo(t);
+                    }
+                    
+                    if(t.getMinValorEnZ() >= solucion.getPlanoDeCorte()) {
+                        solucion.getSolucionDividirSuperior().addTriangulo(t);
+                    }
+                    
+                    if(solucion.getPlanoDeCorte() < t.getMaxValorEnZ() && solucion.getPlanoDeCorte() > t.getMinValorEnZ())  {
+                        
+                    }
+                }
             }
         } else {
             System.exit(-1);

@@ -16,8 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import com.threedom.geometry.Vertice;
-import com.threedom.geometry.Triangulo;
 
 /**
  *
@@ -61,7 +59,7 @@ public class Principal {
         }
         
         if(validador.getSolucion().isSolucionDividirAlcanzada()) {
-            escribirObjeto3D(validador.getSolucion().getSolucionADividir(),Principal.carpetaSolucion);
+            escribirObjeto3D(validador.getSolucion().getSolucionDividirInferior(),Principal.carpetaSolucion);
         }
         /*Objeto3D copia = new Objeto3D(objeto);
         

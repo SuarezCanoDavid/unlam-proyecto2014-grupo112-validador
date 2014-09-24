@@ -8,8 +8,8 @@ import java.util.Collections;
 
 public class Objeto3D {
 	
-	private ArrayList<Vertice> vertices = new ArrayList<>();
-	private ArrayList<Triangulo> triangulos = new ArrayList<>();
+    private ArrayList<Vertice> vertices = new ArrayList<>();
+    private ArrayList<Triangulo> triangulos = new ArrayList<>();
     private ArrayList<Vector> normales = new ArrayList<>();
     private double IE;
     private double planoInferior;

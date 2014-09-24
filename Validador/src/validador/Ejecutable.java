@@ -69,9 +69,10 @@ public class Ejecutable implements Runnable {
                     zAux = t.getMaxValorEnZ();
                     
                     if(zAux > planoDeCorteInferior) {
-                        if(Math.abs(zAux - planoDeCorteInferior) > Vertice.DELTA) {
+                        /*if(Math.abs(zAux - planoDeCorteInferior) > Vertice.DELTA) {
                             planoDeCorteInferior = zAux;
-                        }
+                        }*/
+                        planoDeCorteInferior = zAux;
                     }
                 }
             }
@@ -81,9 +82,10 @@ public class Ejecutable implements Runnable {
                     zAux = t.getMinValorEnZ();
                     
                     if(zAux < planoDeCorteSuperior) {
-                        if(Math.abs(zAux - planoDeCorteSuperior) > Vertice.DELTA) {
+                        /*if(Math.abs(zAux - planoDeCorteSuperior) > Vertice.DELTA) {
                             planoDeCorteSuperior = zAux;
-                        }
+                        }*/
+                        planoDeCorteSuperior = zAux;
                     }
                 }
             }
