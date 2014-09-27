@@ -59,17 +59,10 @@ public class Principal {
         }
         
         if(validador.getSolucion().isSolucionDividirAlcanzada()) {
-            escribirObjeto3D(validador.getSolucion().getSolucionDividirInferior(),Principal.carpetaSolucion);
+            escribirObjeto3D(validador.getSolucion().getSolucionDividirSuperior(),Principal.carpetaSolucion);
         }
-        /*Objeto3D copia = new Objeto3D(objeto);
         
-        copia.cargarConValoresDe(objeto);
-        
-        boolean a = copia.rotarSegunTriangulo(objeto.getTriangulos().get(0));
-        
-        copia.trasladarAOrigen();
-        
-        escribirObjeto3D(copia,Principal.carpetaSolucion);*/
+        //escribirObjeto3D(validador.getObjetoOriginal(),Principal.carpetaSolucion);
     }
     
     private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {

@@ -8,22 +8,30 @@ public class Vertice {
 	private double y;
 	private double z;
     
-    public static final double DELTA = 0.0001;
+    public static final double DELTA = 0.001;
 	
     public Vertice() {
         
     }
     
     public Vertice(Vertice vertice2) {
-        this.x = vertice2.x;
+        /*this.x = vertice2.x;
         this.y = vertice2.y;
-        this.z = vertice2.z;
+        this.z = vertice2.z;*/
+        
+        this.setX(vertice2.x);
+        this.setY(vertice2.y);
+        this.setZ(vertice2.z);
     }
 
     public Vertice(double x, double y, double z) {
-        this.x = x;
+        /*this.x = x;
         this.y = y;
-        this.z = z;
+        this.z = z;*/
+        
+        this.setX(x);
+        this.setY(y);
+        this.setZ(z);
     }
 
     public double getX() {
@@ -99,12 +107,20 @@ public class Vertice {
         this.x = vertice2.x;
         this.y = vertice2.y;
         this.z = vertice2.z;
+        
+        /*this.setX(vertice2.x);
+        this.setY(vertice2.y);
+        this.setZ(vertice2.z);*/
     }
     
     public void restarYReemplazar(Vertice vertice2) {
-        this.x -= vertice2.x;
+        /*this.x -= vertice2.x;
         this.y -= vertice2.y;
-        this.z -= vertice2.z;
+        this.z -= vertice2.z;*/
+        
+        this.setX(this.x-vertice2.x);
+        this.setY(this.y-vertice2.y);
+        this.setZ(this.z-vertice2.z);
     }
 
     @Override

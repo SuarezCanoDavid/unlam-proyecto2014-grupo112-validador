@@ -28,31 +28,31 @@ public class Objeto3D {
     } 
     
 	public void addTriangulo(Triangulo triangulo) {
-		if(vertices.contains(triangulo.getVerticeA())) {
-            triangulo.setVerticeA(vertices.get(vertices.indexOf(triangulo.getVerticeA())));
-        } else {
-            vertices.add(triangulo.getVerticeA());
-        }
-        
-        if(vertices.contains(triangulo.getVerticeB())) {
-            triangulo.setVerticeB(vertices.get(vertices.indexOf(triangulo.getVerticeB())));
-        } else {
-            vertices.add(triangulo.getVerticeB());
-        }
-        
-        if(vertices.contains(triangulo.getVerticeC())) {
-            triangulo.setVerticeC(vertices.get(vertices.indexOf(triangulo.getVerticeC())));
-        } else {
-            vertices.add(triangulo.getVerticeC());
-        }
-        
-        if(normales.contains(triangulo.getNormal())) {
-            triangulo.setNormal(normales.get(normales.indexOf(triangulo.getNormal())));
-        } else {
-            normales.add(triangulo.getNormal());
-        }
+            if(vertices.contains(triangulo.getVerticeA())) {
+                triangulo.setVerticeA(vertices.get(vertices.indexOf(triangulo.getVerticeA())));
+            } else {
+                vertices.add(triangulo.getVerticeA());
+            }
+
+            if(vertices.contains(triangulo.getVerticeB())) {
+                triangulo.setVerticeB(vertices.get(vertices.indexOf(triangulo.getVerticeB())));
+            } else {
+                vertices.add(triangulo.getVerticeB());
+            }
+
+            if(vertices.contains(triangulo.getVerticeC())) {
+                triangulo.setVerticeC(vertices.get(vertices.indexOf(triangulo.getVerticeC())));
+            } else {
+                vertices.add(triangulo.getVerticeC());
+            }
+
+            if(normales.contains(triangulo.getNormal())) {
+                triangulo.setNormal(normales.get(normales.indexOf(triangulo.getNormal())));
+            } else {
+                normales.add(triangulo.getNormal());
+            }
 		
-		triangulos.add(triangulo);
+            triangulos.add(triangulo);
 	}
 	
     public void cargarConValoresDe(Objeto3D objeto2) {

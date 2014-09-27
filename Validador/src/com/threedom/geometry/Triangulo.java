@@ -20,12 +20,12 @@ public class Triangulo {
     }
     
     public Triangulo(Vertice verticeA, Vertice verticeB, Vertice verticeC) {
-            super();
-            this.verticeA = verticeA;
-            this.verticeB = verticeB;
-            this.verticeC = verticeC;
+        super();
+        this.verticeA = verticeA;
+        this.verticeB = verticeB;
+        this.verticeC = verticeC;
 
-    this.calcularNormal();
+        this.calcularNormal();
     }
 
     public void cargarConValoresDe(Triangulo triangulo2) {
@@ -90,36 +90,154 @@ public class Triangulo {
         normal.normalizar();
     }
     
+    public Vertice getMaxVerticeEnZ() {
+        Vertice maxVerticeEnZ = verticeA;
+        
+        if(verticeB.getZ() > maxVerticeEnZ.getZ()) {
+            maxVerticeEnZ = verticeB;
+        }
+        
+        if(verticeC.getZ() > maxVerticeEnZ.getZ()) {
+            maxVerticeEnZ = verticeC;
+        }
+        
+        return maxVerticeEnZ;
+    }
+    
     public double getMaxValorEnZ() {
-        double maxValorEnZ = verticeA.getZ();
-        double zB = verticeB.getZ();
-        double zC = verticeC.getZ();
+        return getMaxVerticeEnZ().getZ();
+    }
+    
+    public Vertice getMinVerticeEnZ() {
+        Vertice minVerticeEnZ = verticeA;
         
-        if(zB > maxValorEnZ) {
-            maxValorEnZ = zB;
+        if(verticeB.getZ() < minVerticeEnZ.getZ()) {
+            minVerticeEnZ = verticeB;
         }
         
-        if(zC > maxValorEnZ) {
-            maxValorEnZ = zC;
+        if(verticeC.getZ() < minVerticeEnZ.getZ()) {
+            minVerticeEnZ = verticeC;
         }
         
-        return maxValorEnZ;
+        return minVerticeEnZ;
     }
     
     public double getMinValorEnZ() {
-        double minValorEnZ = verticeA.getZ();
-        double zB = verticeB.getZ();
-        double zC = verticeC.getZ();
+        return getMinVerticeEnZ().getZ();
+    }
+    
+    private Vertice getVerticeFaltante(Vertice vertice1, Vertice vertice2) {
+        Vertice verticeFaltante = null;
         
-        if(zB < minValorEnZ) {
-            minValorEnZ = zB;
+        if(!verticeA.equals(vertice1) && !verticeA.equals(vertice2)) {
+            verticeFaltante = verticeA;
         }
         
-        if(zC < minValorEnZ) {
-            minValorEnZ = zC;
+        if(!verticeB.equals(vertice1) && !verticeB.equals(vertice2)) {
+            verticeFaltante = verticeB;
         }
         
-        return minValorEnZ;
+        if(!verticeC.equals(vertice1) && !verticeC.equals(vertice2)) {
+            verticeFaltante = verticeC;
+        }
+            
+        return verticeFaltante;
+    }
+    
+    public ConjuntoDeTriangulos dividirSegunPlanoDeCorte(double planoDeCorte) {
+        ConjuntoDeTriangulos conjunto = new ConjuntoDeTriangulos();
+        
+        Vertice verticeSuperior = getMaxVerticeEnZ();
+        Vertice verticeInferior = getMinVerticeEnZ();
+        Vertice verticeIntermedio = getVerticeFaltante(verticeSuperior,verticeInferior);
+        Vertice verticePuntaAPunta;
+        Vertice verticeIntermedioAPunta;
+        
+        if(verticeIntermedio.getZ() < planoDeCorte) {
+            verticePuntaAPunta = getVerticeEntreRectaYPlano(verticeSuperior,verticeInferior,planoDeCorte);
+            verticeIntermedioAPunta = getVerticeEntreRectaYPlano(verticeSuperior,verticeIntermedio,planoDeCorte);
+            
+            conjunto.setTrianguloA(new Triangulo(verticeSuperior,verticeIntermedioAPunta,verticePuntaAPunta));
+            
+            if(conjunto.getTrianguloA().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloA().setVerticeA(verticePuntaAPunta);
+                conjunto.getTrianguloA().setVerticeC(verticeSuperior);
+                conjunto.getTrianguloA().calcularNormal();
+            }
+            
+            conjunto.setTrianguloB(new Triangulo(verticeIntermedioAPunta,verticeIntermedio,verticeInferior));
+            
+            if(conjunto.getTrianguloB().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloB().setVerticeA(verticeInferior);
+                conjunto.getTrianguloB().setVerticeC(verticeIntermedioAPunta);
+                conjunto.getTrianguloB().calcularNormal();
+            }
+            
+            conjunto.setTrianguloC(new Triangulo(verticePuntaAPunta,verticeIntermedioAPunta,verticeInferior));
+            
+            if(conjunto.getTrianguloC().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloC().setVerticeA(verticeInferior);
+                conjunto.getTrianguloC().setVerticeC(verticePuntaAPunta);
+                conjunto.getTrianguloC().calcularNormal();
+            }
+            
+            conjunto.setTipo(ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_SUPERIOR);
+        }
+        
+        if(verticeIntermedio.getZ() > planoDeCorte) {
+            verticePuntaAPunta = getVerticeEntreRectaYPlano(verticeSuperior,verticeInferior,planoDeCorte);
+            verticeIntermedioAPunta = getVerticeEntreRectaYPlano(verticeIntermedio,verticeInferior,planoDeCorte);
+            
+            conjunto.setTrianguloA(new Triangulo(verticeInferior,verticeIntermedioAPunta,verticePuntaAPunta));
+            
+            if(conjunto.getTrianguloA().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloA().setVerticeA(verticePuntaAPunta);
+                conjunto.getTrianguloA().setVerticeC(verticeInferior);
+                conjunto.getTrianguloA().calcularNormal();
+            }
+            
+            conjunto.setTrianguloB(new Triangulo(verticeIntermedioAPunta,verticeIntermedio,verticeSuperior));
+            
+            if(conjunto.getTrianguloB().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloB().setVerticeA(verticeSuperior);
+                conjunto.getTrianguloB().setVerticeC(verticeIntermedioAPunta);
+                conjunto.getTrianguloB().calcularNormal();
+            }
+            
+            conjunto.setTrianguloC(new Triangulo(verticeSuperior,verticePuntaAPunta,verticeIntermedioAPunta));
+            
+            if(conjunto.getTrianguloC().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloC().setVerticeA(verticeIntermedioAPunta);
+                conjunto.getTrianguloC().setVerticeC(verticeSuperior);
+                conjunto.getTrianguloC().calcularNormal();
+            }
+            
+            conjunto.setTipo(ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_INFERIOR);
+        }
+        
+        if(verticeIntermedio.getZ() == planoDeCorte) {
+            verticePuntaAPunta = getVerticeEntreRectaYPlano(verticeInferior,verticeSuperior,planoDeCorte);
+            
+            conjunto.setTrianguloA(new Triangulo(verticeSuperior,verticeIntermedio,verticePuntaAPunta));
+            
+            if(conjunto.getTrianguloA().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloA().setVerticeA(verticePuntaAPunta);
+                conjunto.getTrianguloA().setVerticeC(verticeSuperior);
+                conjunto.getTrianguloA().calcularNormal();
+            }
+            
+            conjunto.setTrianguloB(new Triangulo(verticeInferior,verticePuntaAPunta,verticeIntermedio));
+            
+            if(conjunto.getTrianguloB().getNormal().getAnguloEntreNormalizado(this.normal) > Math.PI/16) {
+                conjunto.getTrianguloB().setVerticeA(verticeIntermedio);
+                conjunto.getTrianguloB().setVerticeC(verticeInferior);
+                conjunto.getTrianguloB().calcularNormal();
+            }
+            
+            conjunto.setTipo(ConjuntoDeTriangulos.DOS_TRIANGULOS);
+        }
+        
+        return conjunto;
     }
     
     public boolean perteneceAlPlano(double planoInferior) {
@@ -138,6 +256,23 @@ public class Triangulo {
         }
         
         return esTrianguloBase;
+    }
+    
+    private Vertice getVerticeEntreRectaYPlano(Vertice verticeInicial, Vertice verticeFinal, double k) {
+        Vertice verticeAux = new Vertice();
+        
+        Vector vectorInicial = new Vector(verticeInicial.getX(),verticeInicial.getY(),verticeInicial.getZ());
+        Vector vectorFinal = new Vector(verticeFinal.getX(),verticeFinal.getY(),verticeFinal.getZ());
+        
+        Vector vectorParalelo = vectorFinal.restar(vectorInicial);
+        
+        double t = (k - vectorInicial.getZ()) / vectorParalelo.getZ();
+        
+        verticeAux.setX(vectorInicial.getX() + vectorParalelo.getX() * t);
+        verticeAux.setY(vectorInicial.getY() + vectorParalelo.getY() * t);
+        verticeAux.setZ(k);
+        
+        return verticeAux;
     }
     
     @Override
