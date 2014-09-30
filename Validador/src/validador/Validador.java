@@ -9,6 +9,7 @@ package validador;
 import com.threedom.geometry.Objeto3D;
 import com.threedom.geometry.Triangulo;
 import com.threedom.geometry.ConjuntoDeTriangulos;
+import com.threedom.geometry.Vertice;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -128,24 +129,29 @@ public class Validador {
                         
                         switch(conjunto.getTipo()) {
                             case ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_SUPERIOR: 
-                                solucion.getSolucionDividirSuperior().addTriangulo(conjunto.getTrianguloA());
-                                solucion.getSolucionDividirInferior().addTriangulo(conjunto.getTrianguloB());
-                                solucion.getSolucionDividirInferior().addTriangulo(conjunto.getTrianguloC());
+                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloA()));
+                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloB()));
+                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloC()));
                                 break;
                               
                             case ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_INFERIOR:
-                                solucion.getSolucionDividirInferior().addTriangulo(conjunto.getTrianguloA());
-                                solucion.getSolucionDividirSuperior().addTriangulo(conjunto.getTrianguloB());
-                                solucion.getSolucionDividirSuperior().addTriangulo(conjunto.getTrianguloC());
+                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloA()));
+                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloB()));
+                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloC()));
                                 break;
                                 
                             case ConjuntoDeTriangulos.DOS_TRIANGULOS:
-                                solucion.getSolucionDividirSuperior().addTriangulo(conjunto.getTrianguloA());
-                                solucion.getSolucionDividirInferior().addTriangulo(conjunto.getTrianguloB());
+                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloA()));
+                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloB()));
                                 break;
                         }
                     }
                 }
+                
+                solucion.getSolucionDividirSuperior().trasladarAOrigen();
+                solucion.getSolucionDividirInferior().rotarSegunTriangulo(
+                        new Triangulo(new Vertice(0,0,0),new Vertice(1,0,0),new Vertice(1,1,0)));
+                solucion.getSolucionDividirInferior().trasladarAOrigen();
             }
         } else {
             System.exit(-1);
