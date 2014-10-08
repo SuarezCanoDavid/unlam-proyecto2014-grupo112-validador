@@ -192,11 +192,6 @@ public class Vector {
         this.setY(vector2.y);
         this.setZ(vector2.z);*/
     }
-    
-    @Override
-    public String toString() {
-        return String.format("[%f;%f;%f]", x, y, z);
-    }
 
     @Override
     public int hashCode() {

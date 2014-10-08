@@ -83,8 +83,6 @@ public class Principal {
         } else {
             describirSolucionRechazo();
         }
-        
-        System.out.print("Ejecutado");
     }
     
     private static void leerObjeto3D(Objeto3D obj, String nombreArchivo) {
@@ -109,6 +107,7 @@ public class Principal {
         Double IDMMax;
         Double anguloMax;
         Integer cantHilosMax;
+        Integer timeOut;
         
         try {
             doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(config);
@@ -138,9 +137,16 @@ public class Principal {
             cantHilosMax = Validador.DEFAULT_HILOS_MAX;
         }
         
+        try {
+            timeOut = Integer.parseInt(keys.getElementsByTagName("time-out").item(0).getTextContent());
+        } catch(NumberFormatException ex) {
+            timeOut = Validador.DEFAULT_TIME_OUT;
+        }
+        
         validador.setIEMax(IDMMax);
         validador.setAnguloMax(anguloMax);
         validador.setCantHilosMax(cantHilosMax);
+        validador.setTimeOut(timeOut);
     }
     
     private static boolean comprobarArgumentos(String[] args) {

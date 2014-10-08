@@ -7,6 +7,7 @@
 package validador;
 
 import com.threedom.algebra.Vector;
+import com.threedom.geometry.ConjuntoDeTriangulos;
 import com.threedom.geometry.Objeto3D;
 import com.threedom.geometry.Triangulo;
 import com.threedom.geometry.Vertice;
@@ -43,6 +44,7 @@ public class Ejecutable implements Runnable {
         double planoDeCorteSuperior;
         Vector normalAux;
         double zAux;
+        int indiceDeLaNormal;
         
         if(solucion.isSolucionRotarAlcanzada()) {
             return;
@@ -54,7 +56,14 @@ public class Ejecutable implements Runnable {
         
         copia.cargarConValoresDe(original);
         
+        indiceDeLaNormal = original.getNormales().indexOf(trianguloDeGiro.getNormal());
+        
         sePuedeRotar = copia.rotarSegunTriangulo(trianguloDeGiro);
+        
+        if(!sePuedeRotar && validador.isNormalAnalizada(indiceDeLaNormal)) {
+            validador.liberarObjetoCopiaOcupado(indiceObjetoCopiaLibre);
+            return;
+        }
 
         copia.trasladarAOrigen();
         
@@ -93,14 +102,70 @@ public class Ejecutable implements Runnable {
 
         if(sePuedeRotar) {
             if(planoDeCorteInferior == copia.getPlanoInferior()) {
-                solucion.setSolucionRotar(copia);
-                validador.liberarObjetoCopiaOcupado(indiceObjetoCopiaLibre);
-                return;
+                if(copia.getIE() <= this.IEMax) {
+                    solucion.setSolucionRotar(copia);
+                    validador.liberarObjetoCopiaOcupado(indiceObjetoCopiaLibre);
+                    return;
+                }
             }
         }
         
-        if(planoDeCorteInferior <= planoDeCorteSuperior) {
-            solucion.setSolucionADividir(copia, (planoDeCorteInferior+planoDeCorteSuperior)/2);
+        if(!validador.isNormalAnalizada(indiceDeLaNormal)) {
+            validador.setNormalAnalizada(indiceDeLaNormal);
+            
+            if(planoDeCorteInferior <= planoDeCorteSuperior) {
+                if(!solucion.isSolucionRotarAlcanzada() && !solucion.isSolucionDividirAlcanzada()) {
+                    Objeto3D superior = new Objeto3D();
+                    Objeto3D inferior = new Objeto3D();
+                    superior.inicializarListas(copia.getTriangulos().size());
+                    inferior.inicializarListas(copia.getTriangulos().size());
+
+                    ConjuntoDeTriangulos conjunto;
+                    double planoDeCorte = (planoDeCorteInferior+planoDeCorteSuperior)/2;
+
+                    for(Triangulo t : copia.getTriangulos()) {
+                        if(t.getMaxValorEnZ() <= planoDeCorte) {
+                            inferior.addTriangulo(new Triangulo(t));
+                        }
+
+                        if(t.getMinValorEnZ() >= planoDeCorte) {
+                            superior.addTriangulo(new Triangulo(t));
+                        }
+
+                        if(planoDeCorte < t.getMaxValorEnZ() && planoDeCorte > t.getMinValorEnZ()) {
+                            conjunto = t.dividirSegunPlanoDeCorte(planoDeCorte);
+
+                            switch(conjunto.getTipo()) {
+                                case ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_SUPERIOR:
+                                    superior.addTriangulo(new Triangulo(conjunto.getTrianguloA()));
+                                    inferior.addTriangulo(new Triangulo(conjunto.getTrianguloB()));
+                                    inferior.addTriangulo(new Triangulo(conjunto.getTrianguloC()));
+                                    break;
+
+                                case ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_INFERIOR:
+                                    inferior.addTriangulo(new Triangulo(conjunto.getTrianguloA()));
+                                    superior.addTriangulo(new Triangulo(conjunto.getTrianguloB()));
+                                    superior.addTriangulo(new Triangulo(conjunto.getTrianguloC()));
+                                    break;
+
+                                case ConjuntoDeTriangulos.DOS_TRIANGULOS:
+                                    superior.addTriangulo(new Triangulo(conjunto.getTrianguloA()));
+                                    inferior.addTriangulo(new Triangulo(conjunto.getTrianguloB()));
+                                    break;
+                            }
+                        }
+                    }
+
+                    superior.trasladarAOrigen();
+                    inferior.rotarSegunTriangulo(new Triangulo(new Vertice(0,0,0),new Vertice(1,0,0),new Vertice(1,1,0)));
+                    inferior.trasladarAOrigen();
+
+
+                    if(inferior.getIE() <= this.IEMax && superior.getIE() <= this.IEMax) {
+                        solucion.setSolucionDividir(inferior, superior);
+                    }
+                }
+            } 
         }
         
         validador.liberarObjetoCopiaOcupado(indiceObjetoCopiaLibre);

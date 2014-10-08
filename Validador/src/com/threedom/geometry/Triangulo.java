@@ -274,9 +274,4 @@ public class Triangulo {
         
         return verticeAux;
     }
-    
-    @Override
-    public String toString() {
-            return String.format("%s %s %s %s",this.verticeA,this.verticeB,this.verticeC, this.normal);
-    }
 }

@@ -1,7 +1,5 @@
 package com.threedom.geometry;
 
-import com.threedom.algebra.MatrizDeRotacion;
-
 public class Vertice {
 	
 	private double x;
@@ -99,10 +97,6 @@ public class Vertice {
         return false;
     }
     
-    public void rotar(MatrizDeRotacion matrizDeRotacion) {
-        matrizDeRotacion.multiplicarYReemplazar(this);
-    }
-    
     public void cargarConValoresDe(Vertice vertice2) {
         this.x = vertice2.x;
         this.y = vertice2.y;
@@ -121,6 +115,12 @@ public class Vertice {
         this.setX(this.x-vertice2.x);
         this.setY(this.y-vertice2.y);
         this.setZ(this.z-vertice2.z);
+    }
+    
+    public void sumarYReemplazar(Vertice vertice2) {
+        this.setX(this.x+vertice2.x);
+        this.setY(this.y+vertice2.y);
+        this.setZ(this.z+vertice2.z);
     }
 
     @Override
@@ -152,9 +152,4 @@ public class Vertice {
         }
         return true;
     }
-
-	@Override
-	public String toString() {
-		return String.format("(%f,%f,%f)",this.x,this.y,this.z);
-	}
 }

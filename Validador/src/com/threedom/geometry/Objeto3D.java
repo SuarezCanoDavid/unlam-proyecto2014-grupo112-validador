@@ -4,22 +4,25 @@ import com.threedom.algebra.Matriz;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.threedom.algebra.Vector;
-import java.util.Collections;
 
 public class Objeto3D {
 	
-    private ArrayList<Vertice> vertices = new ArrayList<>();
-    private ArrayList<Triangulo> triangulos = new ArrayList<>();
-    private ArrayList<Vector> normales = new ArrayList<>();
+    private ArrayList<Vertice> vertices;
+    private ArrayList<Triangulo> triangulos;
+    private ArrayList<Vector> normales;
     private double IE;
     private double planoInferior;
     private double planoSuperior;
+    private int proximoIndiceVertice = 0;
+    private int proximoIndiceNormal = 0;
     
     public Objeto3D() {
         
     }
 	
     public Objeto3D(Objeto3D obj2) {
+        inicializarListas(obj2.getTriangulos().size());
+        
         Iterator<Triangulo> itTriangulos = obj2.triangulos.iterator();
         
         while(itTriangulos.hasNext()) {
@@ -27,44 +30,76 @@ public class Objeto3D {
         }
     } 
     
-	public void addTriangulo(Triangulo triangulo) {
-            if(vertices.contains(triangulo.getVerticeA())) {
-                triangulo.setVerticeA(vertices.get(vertices.indexOf(triangulo.getVerticeA())));
-            } else {
-                vertices.add(triangulo.getVerticeA());
-            }
+    public void inicializarListas(int cantidadDeTriangulos) {
+        triangulos = new ArrayList<Triangulo>(cantidadDeTriangulos);
+        vertices = new ArrayList<Vertice>(cantidadDeTriangulos*3);
+        normales = new ArrayList<Vector>(cantidadDeTriangulos);
+    }
+    
+    public void addTriangulo(Triangulo triangulo) {
+        int indice;
+        
+        indice = getIndiceDelVertice(triangulo.getVerticeA());
+        
+        if(indice >= 0) {
+            triangulo.setVerticeA(vertices.get(indice));
+        } else {
+            vertices.add(triangulo.getVerticeA());
+            ++proximoIndiceVertice;
+        }
 
-            if(vertices.contains(triangulo.getVerticeB())) {
-                triangulo.setVerticeB(vertices.get(vertices.indexOf(triangulo.getVerticeB())));
-            } else {
-                vertices.add(triangulo.getVerticeB());
-            }
+        indice = getIndiceDelVertice(triangulo.getVerticeB());
+        
+        if(indice >= 0) {
+            triangulo.setVerticeB(vertices.get(indice));
+        } else {
+            vertices.add(triangulo.getVerticeB());
+            ++proximoIndiceVertice;
+        }
 
-            if(vertices.contains(triangulo.getVerticeC())) {
-                triangulo.setVerticeC(vertices.get(vertices.indexOf(triangulo.getVerticeC())));
-            } else {
-                vertices.add(triangulo.getVerticeC());
-            }
+        indice = getIndiceDelVertice(triangulo.getVerticeC());
+        
+        if(indice >= 0) {
+            triangulo.setVerticeC(vertices.get(indice));
+        } else {
+            vertices.add(triangulo.getVerticeC());
+            ++proximoIndiceVertice;
+        }
 
-            if(normales.contains(triangulo.getNormal())) {
-                triangulo.setNormal(normales.get(normales.indexOf(triangulo.getNormal())));
-            } else {
-                normales.add(triangulo.getNormal());
-            }
-		
-            triangulos.add(triangulo);
-	}
-	
+        indice = getIndiceDeLaNormal(triangulo.getNormal());
+        
+        if(indice >= 0) {
+            triangulo.setNormal(normales.get(indice));
+        } else {
+            normales.add(triangulo.getNormal());
+            ++proximoIndiceNormal;
+        }
+
+        triangulos.add(triangulo);
+    }
+    
+    private int getIndiceDelVertice(Vertice vertice) {
+        int indice;
+        
+        for(indice = proximoIndiceVertice-1; indice >= 0 && !vertices.get(indice).equals(vertice); --indice);
+        
+        return indice;
+    }
+    
+    private int getIndiceDeLaNormal(Vector normal) {
+        int indice;
+        
+        for(indice = proximoIndiceNormal-1; indice >= 0 && !normales.get(indice).equals(normal); --indice);
+        
+        return indice;
+    }
+    
     public void cargarConValoresDe(Objeto3D objeto2) {
         int cantidadDeTriangulos = objeto2.triangulos.size();
         
         for(int i = 0; i < cantidadDeTriangulos; ++i) {
             this.triangulos.get(i).cargarConValoresDe(objeto2.triangulos.get(i));
         }
-    }
-    
-    public void ordenarTriangulos() {
-        Collections.sort(triangulos, new ComparadorDeAreaDeTriangulo());
     }
     
     private Vertice determinarOrigen() {
@@ -173,8 +208,6 @@ public class Objeto3D {
     }
     
     private void determinarIE() {
-        Vertice verticeEnBase = new Vertice();
-        Vertice verticeEnMax = new Vertice();
         double areaEnBase = 0;
         double areaEnMax = 0;
         double alturaTotal = planoSuperior - planoInferior;
@@ -183,20 +216,31 @@ public class Objeto3D {
         double yAux;
         double zAux;
         double areaAux;
+        int i;
+        int cantVerticesInferior = 0;
+        Vertice verticeCentro;
         
-        verticeEnBase.cargarConValoresDe(vertices.get(0));
-        verticeEnMax.cargarConValoresDe(vertices.get(0));
+        for(i = 0; vertices.get(i).getZ() != planoInferior; ++i);
+        
+        verticeCentro = new Vertice(vertices.get(i));
+        
+        for(++i; i < vertices.size(); ++i) {
+            if(vertices.get(i).getZ() == planoInferior) {
+                verticeCentro.sumarYReemplazar(vertices.get(i));
+                ++cantVerticesInferior;
+            }
+        }
+        
+        verticeCentro.setX(verticeCentro.getX()/cantVerticesInferior);
+        verticeCentro.setY(verticeCentro.getY()/cantVerticesInferior);
+        verticeCentro.setZ(verticeCentro.getZ()/cantVerticesInferior);
         
         for(Vertice v : vertices) {
-            xAux = Math.abs(v.getX());
-            yAux = Math.abs(v.getY());
+            xAux = v.getX()-verticeCentro.getX();
+            yAux = v.getY()-verticeCentro.getY();
             zAux = v.getZ();
             
-            if(xAux > yAux) {
-                areaAux = 4 * xAux * xAux;
-            } else {
-                areaAux = 4 * yAux * yAux;
-            }
+            areaAux = Math.PI * (xAux*xAux + yAux*yAux);
             
             if(areaAux >= areaEnMax) {
                 areaEnMax = areaAux;
@@ -212,16 +256,4 @@ public class Objeto3D {
         
         this.IE = (areaEnMax * (alturaEnMax/alturaTotal)) / areaEnBase;
     }
-    
-	public void imprimir() {
-		Iterator<Triangulo> it = triangulos.iterator();
-		int i = 0;
-		
-		while(it.hasNext())
-		{
-			System.out.printf("Triangulo %d: %s\n", i, it.next());
-			
-			++i;
-		}
-	}
 }

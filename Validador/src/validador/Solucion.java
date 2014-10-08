@@ -19,9 +19,6 @@ public class Solucion {
     private double planoDeCorte = 0;
     private Objeto3D solucionDividirSuperior = null;
     private Objeto3D solucionDividirInferior = null;
-    private int contadorDeOperaciones = 0;
-    private double planoDeCorteInferior;
-    private double planoInferiorDeLaCopia;
     
     public Solucion() {
         
@@ -42,6 +39,18 @@ public class Solucion {
         if(!solucionDividirAlcanzada) {
             solucionADividir = new Objeto3D(objetoADividir);
             planoDeCorte = corte;
+            solucionDividirAlcanzada = true;
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public synchronized boolean setSolucionDividir(Objeto3D inferior, Objeto3D superior) {
+        if(!solucionDividirAlcanzada) {
+            solucionDividirInferior = inferior;
+            solucionDividirSuperior = superior;
             solucionDividirAlcanzada = true;
             
             return true;
@@ -86,7 +95,7 @@ public class Solucion {
         return solucionDividirAlcanzada;
     }
     
-    public synchronized void incrementarContadorDeOperaciones() {
+    /*public synchronized void incrementarContadorDeOperaciones() {
         ++contadorDeOperaciones;
     }
 
@@ -96,5 +105,5 @@ public class Solucion {
 
     public synchronized void setPlanoInferiorDeLaCopia(double planoInferiorDeLaCopia) {
         this.planoInferiorDeLaCopia = planoInferiorDeLaCopia;
-    }
+    }*/
 }

@@ -7,9 +7,6 @@
 package validador;
 
 import com.threedom.geometry.Objeto3D;
-import com.threedom.geometry.Triangulo;
-import com.threedom.geometry.ConjuntoDeTriangulos;
-import com.threedom.geometry.Vertice;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,15 +18,18 @@ public class Validador {
     public static final double DEFAULT_IDM_MAX = 1.9;
     public static final double DEFAULT_ANGULO_MAX = 45;
     public static final int DEFAULT_HILOS_MAX = Runtime.getRuntime().availableProcessors();
+    public static final int DEFAULT_TIME_OUT = 180;
     
     private Objeto3D objetoOriginal;
     private Objeto3D[] objetosCopias;
     private Boolean[] objetosCopiasLibres;
     private Solucion solucion = new Solucion();
+    private Boolean[] normalAnalizada;
     
     private double IEMax = Validador.DEFAULT_IDM_MAX;
     private double anguloMax = Validador.DEFAULT_ANGULO_MAX;
     private int cantHilosMax = Validador.DEFAULT_HILOS_MAX;
+    private int timeOut = Validador.DEFAULT_TIME_OUT;
     
     public Validador(Objeto3D objeto) {
         objetoOriginal = objeto;
@@ -59,6 +59,14 @@ public class Validador {
         this.cantHilosMax = cantHilosMax;
     }
 
+    public int getTimeOut() {
+        return timeOut;
+    }
+
+    public void setTimeOut(int timeOut) {
+        this.timeOut = timeOut;
+    }
+
     public Solucion getSolucion() {
         return solucion;
     }
@@ -85,17 +93,29 @@ public class Validador {
         objetosCopiasLibres[i] = true;
     }
     
+    public synchronized Boolean isNormalAnalizada(int indice) {
+        return normalAnalizada[indice];
+    }
+    
+    public synchronized void setNormalAnalizada(int indice) {
+        normalAnalizada[indice] = true;
+    }
+    
     public void validar() {
         boolean finAntesDeTimeOut = true;
-        ConjuntoDeTriangulos conjunto;
         ExecutorService threadPool = Executors.newFixedThreadPool(cantHilosMax);
         
         objetosCopias = new Objeto3D[cantHilosMax];
         objetosCopiasLibres = new Boolean[cantHilosMax];
+        normalAnalizada = new Boolean[objetoOriginal.getNormales().size()];
         
         for(int i = 0; i < cantHilosMax; ++i) {
             objetosCopias[i] = new Objeto3D(objetoOriginal);
             objetosCopiasLibres[i] = true;
+        }
+        
+        for(int i = 0; i < objetoOriginal.getNormales().size(); ++i) {
+            normalAnalizada[i] = false;
         }
         
         for(int i = 0; i < objetoOriginal.getTriangulos().size(); ++i) {
@@ -105,55 +125,12 @@ public class Validador {
         threadPool.shutdown();
         
         try {
-            finAntesDeTimeOut = threadPool.awaitTermination(60, TimeUnit.SECONDS);
+            finAntesDeTimeOut = threadPool.awaitTermination(timeOut, TimeUnit.SECONDS);
         } catch (InterruptedException ex) {
-            
+            System.exit(-1);
         }
         
-        if(finAntesDeTimeOut) {
-            if(!solucion.isSolucionRotarAlcanzada() && solucion.isSolucionDividirAlcanzada()) {
-                solucion.setSolucionDividirInferior(new Objeto3D());
-                solucion.setSolucionDividirSuperior(new Objeto3D());
-                
-                for(Triangulo t : solucion.getSolucionADividir().getTriangulos()) {
-                    if(t.getMaxValorEnZ() <= solucion.getPlanoDeCorte()) {
-                        solucion.getSolucionDividirInferior().addTriangulo(t);
-                    }
-                    
-                    if(t.getMinValorEnZ() >= solucion.getPlanoDeCorte()) {
-                        solucion.getSolucionDividirSuperior().addTriangulo(t);
-                    }
-                    
-                    if(solucion.getPlanoDeCorte() < t.getMaxValorEnZ() && solucion.getPlanoDeCorte() > t.getMinValorEnZ())  {
-                        conjunto = t.dividirSegunPlanoDeCorte(solucion.getPlanoDeCorte());
-                        
-                        switch(conjunto.getTipo()) {
-                            case ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_SUPERIOR: 
-                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloA()));
-                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloB()));
-                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloC()));
-                                break;
-                              
-                            case ConjuntoDeTriangulos.TRES_TRIANGULOS_UNO_INFERIOR:
-                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloA()));
-                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloB()));
-                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloC()));
-                                break;
-                                
-                            case ConjuntoDeTriangulos.DOS_TRIANGULOS:
-                                solucion.getSolucionDividirSuperior().addTriangulo(new Triangulo(conjunto.getTrianguloA()));
-                                solucion.getSolucionDividirInferior().addTriangulo(new Triangulo(conjunto.getTrianguloB()));
-                                break;
-                        }
-                    }
-                }
-                
-                solucion.getSolucionDividirSuperior().trasladarAOrigen();
-                solucion.getSolucionDividirInferior().rotarSegunTriangulo(
-                        new Triangulo(new Vertice(0,0,0),new Vertice(1,0,0),new Vertice(1,1,0)));
-                solucion.getSolucionDividirInferior().trasladarAOrigen();
-            }
-        } else {
+        if(!finAntesDeTimeOut) {
             System.exit(-1);
         }
     }
