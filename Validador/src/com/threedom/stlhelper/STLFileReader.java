@@ -48,7 +48,7 @@ public class STLFileReader {
             obj.addTriangulo(this.readTriangulo());
         }
         
-        //obj.ordenarTriangulos();
+        obj.ordenarTriangulos();
     }
     
     public void close() {

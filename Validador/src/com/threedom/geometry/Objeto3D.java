@@ -4,6 +4,7 @@ import com.threedom.algebra.Matriz;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.threedom.algebra.Vector;
+import java.util.Collections;
 
 public class Objeto3D {
 	
@@ -100,6 +101,10 @@ public class Objeto3D {
         for(int i = 0; i < cantidadDeTriangulos; ++i) {
             this.triangulos.get(i).cargarConValoresDe(objeto2.triangulos.get(i));
         }
+    }
+    
+    public void ordenarTriangulos() {
+        Collections.sort(triangulos, new ComparadorDeTriangulos());
     }
     
     private Vertice determinarOrigen() {
@@ -204,10 +209,15 @@ public class Objeto3D {
         planoInferior -= origen.getZ();
         planoSuperior -= origen.getZ();
         
-        determinarIE();
+        try {
+            determinarIE();
+        } catch(IndexOutOfBoundsException e){
+            String mensaje = e.getMessage();
+        }
+        
     }
     
-    private void determinarIE() {
+    private void determinarIE() throws IndexOutOfBoundsException {
         double areaEnBase = 0;
         double areaEnMax = 0;
         double alturaTotal = planoSuperior - planoInferior;
@@ -218,9 +228,9 @@ public class Objeto3D {
         double areaAux;
         int i;
         int cantVerticesInferior = 0;
-        Vertice verticeCentro;
+        Vertice verticeCentro = null;
         
-        for(i = 0; vertices.get(i).getZ() != planoInferior; ++i);
+        for(i = 0; i < vertices.size() && vertices.get(i).getZ() != planoInferior; ++i);
         
         verticeCentro = new Vertice(vertices.get(i));
         

@@ -104,7 +104,7 @@ public class Principal {
     private static void setParametrosDelValidador(Validador validador) {
         File config = new File(Principal.nombreArchivoConfiguracion);
         Document doc = null;
-        Double IDMMax;
+        Double IEMax;
         Double anguloMax;
         Integer cantHilosMax;
         Integer timeOut;
@@ -120,9 +120,9 @@ public class Principal {
         Element keys = (Element) doc.getElementsByTagName("keys").item(0);
         
         try {
-            IDMMax = Double.parseDouble(keys.getElementsByTagName("idm-max").item(0).getTextContent());
+            IEMax = Double.parseDouble(keys.getElementsByTagName("ie-max").item(0).getTextContent());
         } catch(NumberFormatException ex) {
-            IDMMax = Validador.DEFAULT_IDM_MAX;
+            IEMax = Validador.DEFAULT_IDM_MAX;
         }
         
         try {
@@ -143,7 +143,7 @@ public class Principal {
             timeOut = Validador.DEFAULT_TIME_OUT;
         }
         
-        validador.setIEMax(IDMMax);
+        validador.setIEMax(IEMax);
         validador.setAnguloMax(anguloMax);
         validador.setCantHilosMax(cantHilosMax);
         validador.setTimeOut(timeOut);

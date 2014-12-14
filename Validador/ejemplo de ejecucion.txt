@@ -1,0 +1,25 @@
+Ejecución del programa:
+java -jar "Validador.jar" ruta_absoluta_del_objeto ruta_absoluta_de_la_carpeta_destino ruta_absoluta_del_archivo_de_configuracion
+
+Ejemplo:
+java -jar "/home/david/NetBeansProjects/Validador/dist/Validador.jar" /home/david/NetBeansProjects/Validador/Lote_de_Prueba/Entradas/Lisa.stl /home/david/NetBeansProjects/Validador/Lote_de_Prueba/Salidas /home/david/NetBeansProjects/Validador/Validador.config
+
+El objeto STL a analizar debe estar en formato binario. Se podría omitir el último parámetro ya que lo busca en la ubicación actual.
+Por las dudas se lo agrego porque no me funcionó fuera del entorno de desarrollo.
+
+Contenido de Validador.config:
+<configuration>
+    <keys>
+        <ie-max>1.9</ie-max> Indice de estabilidad (Ver abajo).  
+        <angulo-max>60</angulo-max> Angulo máximo sin la necesidad de generar soportes, expresado en grados.
+        <hilos-max>8</hilos-max> Cantidad de hilos de ejecución
+        <time-out>180</time-out> Tiempo máximo que se permite ejecutar las tareas de análisis de la figura. Se expresa en segundos.
+    </keys>
+</configuration>
+
+Indice de estabilidad:
+Las figuras con forma /\ tienen un IE de 0.
+Las figuras con forma || tienen un IE de 1.
+El IE aumenta con figuras que tienen la forma \/.
+
+Al terminar el programa se genera un archivo llamado "descripcion.xml" que describe la validación.
