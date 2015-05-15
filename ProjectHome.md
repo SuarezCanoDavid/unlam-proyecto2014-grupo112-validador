@@ -1,0 +1,1 @@
+Aplicación cuya función es rotar o dividir un objeto 3D representado por un archivo .STL con el propósito de evitar la generación de soportes al momento de realizar una impresión 3D.
